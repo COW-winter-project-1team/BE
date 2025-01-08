@@ -19,6 +19,12 @@ configurations {
     }
 }
 
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -27,6 +33,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    //spotify
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:9.1.0'
+    implementation 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'

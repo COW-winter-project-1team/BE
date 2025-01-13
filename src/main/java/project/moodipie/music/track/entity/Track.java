@@ -1,10 +1,10 @@
-package project.moodipie.track.entity;
+package project.moodipie.music.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.moodipie.playlist.entity.Playlist;
+import project.moodipie.music.playlist.entity.Playlist;
 
 import java.util.ArrayList;
 import java.util.List;

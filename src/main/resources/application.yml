@@ -1,6 +1,9 @@
 spring:
   application:
     name: moodipie
+  main:
+    allow-bean-definition-overriding: true
+
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html

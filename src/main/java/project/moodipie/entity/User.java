@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import project.moodipie.playlist.entity.Playlist;
-
-import java.util.ArrayList;
-import java.util.List;
+import project.moodipie.music.playlist.entity.Playlist;
 
 @Entity
 @Getter

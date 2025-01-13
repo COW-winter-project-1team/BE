@@ -1,4 +1,4 @@
-package project.moodipie.track.controller.dto;
+package project.moodipie.music.track.controller.dto;
 
 import lombok.Getter;
 

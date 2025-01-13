@@ -2,7 +2,7 @@ package project.moodipie.controller.dto;
 
 import lombok.Getter;
 import project.moodipie.entity.Emotion;
-import project.moodipie.playlist.entity.Playlist;
+import project.moodipie.music.playlist.entity.Playlist;
 
 @Getter
 public class CreatePlaylistRequest {

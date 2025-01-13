@@ -1,4 +1,4 @@
-package project.moodipie.spotify.configuration.properties;
+package project.moodipie.openfeign;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.moodipie.music.playlist.entity.Playlist;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -20,23 +23,21 @@ public class User {
     private String name;
     private String email;
     private String password;
-
-//    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
-//    private List<Playlist> playlists = new ArrayList<>();
+    private boolean firstLogin;
+    private Integer profileImage;
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
+    private List<Playlist> playlists = new ArrayList<>();
 
     @Builder
     private User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.firstLogin = true;
+        this.profileImage = 0;
     }
     public void updateName(String name) {
         this.name = name;
     }
-    public void addPlaylist(Playlist playlist) {
-
-    }
-    public void removePlaylist(Playlist playlist) {
-
-    }
+    public void updateProfilePicture(Integer profilePicture) {this.profileImage = profilePicture;}
 }

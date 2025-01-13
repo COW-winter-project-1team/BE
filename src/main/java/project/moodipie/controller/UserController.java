@@ -6,11 +6,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import project.moodipie.controller.dto.*;
+import project.moodipie.dto.CreateUserRequest;
+import project.moodipie.dto.LoginDto;
+import project.moodipie.dto.UpdateUserRequest;
+import project.moodipie.dto.response.SignUpResponse;
+import project.moodipie.dto.response.UserResponse;
 import project.moodipie.entity.User;
+import project.moodipie.repository.UserRepository;
 import project.moodipie.service.UserService;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
@@ -18,64 +23,64 @@ public class UserController {
     private final UserService userService;
     @Autowired
     private HttpSession session;
-    @GetMapping
-    public String user(){
-        if(session.getAttribute("user") == null){
-            return "redirect:/login";
-        }
-        return "redirect:/home";
-    }
+    @Autowired
+    private UserRepository userRepository;
 
-    @PostMapping("/signup")//회원가입 기능
-    public String signup(@RequestBody CreateUserRequest createUserRequest) {
-        System.out.println("회원가입 작동-controller");
-        System.out.println(createUserRequest.getEmail());
-        try {
-            userService.signup(createUserRequest);
-            return "redirect:/users/login";  // 회원가입 성공 후 로그인 페이지로 리디렉션
-        } catch (Exception e) {
-            e.printStackTrace();  // 예외를 콘솔에 출력하여 어떤 오류가 발생했는지 확인
-            return "error";  // 회원가입 실패 시 오류 페이지로 리디렉션
-        }
+    @GetMapping//마이페이지
+    public UserResponse userPage(){
+        User currentUser =(User) session.getAttribute("currentuser");
+        if(currentUser == null){throw new IllegalArgumentException("User not found");}
+        UserResponse response =new UserResponse(currentUser.getName(), currentUser.getProfileImage());
+        return response;
     }
-    @GetMapping("/signup")//회원가입 페이지
-    public String getPage(){
-        return "signup";
-    }
-
-
-    @PutMapping("/name")//이름 수정
+    @PutMapping//회원정보 수정
     public void update(@RequestBody UpdateUserRequest updateUserRequest){
         User currentuser = (User) session.getAttribute("currentuser");
         userService.updateUser(currentuser.getId(), updateUserRequest);
+        User updateduser = userService.findUserById(currentuser.getId());
+        this.session.setAttribute("currentuser", updateduser);
     }
-    @GetMapping("/name")
-    public String getNameEditPage(){
-        return "nameedit";
-    }
-    @DeleteMapping//회원 탈퇴
-    public void delete(){
+    @DeleteMapping//회원탈퇴
+    public void deleteUser() {
         User currentuser = (User) session.getAttribute("currentuser");
-        userService.deleteUser(currentuser.getId());
+        userService.deleteUserById(currentuser.getId());
+        session.removeAttribute("currentuser");
     }
 
+    @PostMapping("/signup")//회원가입 기능
+    public SignUpResponse signup(@RequestBody CreateUserRequest createUserRequest) {
+        return userService.signup(createUserRequest);
+    }
+    @GetMapping("/signup")//회원가입 페이지
+    public String signUpPage(){
+        return "signup";
+    }
 
     @PostMapping("/login")//로그인
-    public String login(@RequestBody LoginDto loginDto) {
+    public void login(@RequestBody LoginDto loginDto) {
         User currentuser = userService.login(loginDto);
-        System.out.println("로그인 작동 "+currentuser.getName());
-        if(currentuser.getId() != null) {
+        if (currentuser != null && currentuser.isFirstLogin()) {
             session.setAttribute("currentuser", currentuser);
-            return "redirect:/home";
-        }else {
-            return "error";
+            currentuser.setFirstLogin(false);
+            userRepository.save(currentuser);//첫 로그인일 때
+        }
+        else if(currentuser.getId() != null) {
+            session.setAttribute("currentuser", currentuser);// 기존 로그인일 때
+        }
+        else {
+            // 로그인 실패
         }
     }
-    @GetMapping("/login")
+    @GetMapping("/login") // 로그인 페이지
     public String getlogin() {
         if (session.getAttribute("currentuser") != null) {
-            return "redirect:/home";  // 이미 로그인한 사용자라면 홈 페이지로 리디렉션
+            return "homepage"; //return "redirect:/home";
         }
-        return "login";  // 로그인 페이지로 이동
+        // 로그인 페이지로 이동
+        return "loginpage";
+    }
+    @PostMapping("/logout")//로그아웃
+    public void logout() {
+        session.invalidate();
     }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.moodipie.entity.Emotion;
+import project.moodipie.entity.User;
 import project.moodipie.music.track.entity.Track;
 
 import java.util.Date;
@@ -19,13 +20,10 @@ public class Playlist {
     @Column(name = "playlist_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
-
     //TODO: User 객체 확인 후.
-//    @ManyToOne
-//    @JoinColumn(name = "user_id",insertable = false, updatable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",insertable = false, updatable = false)
+    private User user;
 
     private String title;
     private String playlistImage;

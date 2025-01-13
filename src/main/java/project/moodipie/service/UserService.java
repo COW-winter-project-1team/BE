@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.controller.dto.CreateUserRequest;
-import project.moodipie.controller.dto.LoginDto;
-import project.moodipie.controller.dto.UpdateUserRequest;
-import project.moodipie.controller.dto.UserResponse;
+import project.moodipie.dto.CreateUserRequest;
+import project.moodipie.dto.LoginDto;
+import project.moodipie.dto.UpdateUserRequest;
+import project.moodipie.dto.response.SignUpResponse;
 import project.moodipie.entity.User;
 import project.moodipie.handler.exeption.RestfullException;
 import project.moodipie.repository.UserRepository;
@@ -23,31 +23,30 @@ import project.moodipie.repository.UserRepository;
 public class UserService {
     @Autowired
     private final UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    public void signup(CreateUserRequest createUserRequest) {
-        String encodedPassword = passwordEncoder.encode(createUserRequest.getPassword());
-        createUserRequest.setPassword=encodedPassword;
+    public SignUpResponse signup(CreateUserRequest createUserRequest) {
         User newuser = (User) createUserRequest.toEntity();
+        User existingUser = userRepository.findByEmail(createUserRequest.getEmail());
+        if (existingUser != null) {
+            return SignUpResponse.builder()
+                    .message("Email already exists. Please use a different email.")
+                    .build();
+        }
         userRepository.save(newuser);
-        System.out.println(newuser.getName() + "님이 회원가입 되었습니다.");
+        return SignUpResponse.builder()
+                .message("Sign up successful. Please login to continue")
+                .build();
     }
 
-    @Transactional(readOnly = true)
-    public UserResponse getUser(final Long id) {
-        User user = findUserById(id);
-        return new UserResponse(user.getName(), user.getEmail());
-    }
-
-    public void updateUser(final Long id, UpdateUserRequest updateRequest) {
+    public void updateUser(Long id, UpdateUserRequest updateRequest) {
         User user = findUserById(id);
         user.updateName(updateRequest.getName());
+        user.updateProfilePicture(updateRequest.getProfilePicture());
+        userRepository.save(user);
     }
 
-    public void deleteUser(final Long id) {
-        User user = findUserById(id);
-        userRepository.delete(user);
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
     }
 
     public User findUserById(Long id) {
@@ -58,17 +57,17 @@ public class UserService {
     @Transactional
     public User login(LoginDto loginDto) {
         User currentuser = userRepository.findByEmail(loginDto.getEmail());
-
         if (currentuser == null) {
             System.out.println("not found user");
             throw new RestfullException("NOT_FOUND_ID", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         if (!loginDto.getPassword().equals(currentuser.getPassword())) {
             System.out.println(loginDto.getPassword()+" : "+ currentuser.getPassword());
             throw new RestfullException("WRONG_PASSWORD", HttpStatus.BAD_REQUEST);
         }
-
         return currentuser;
     }
+
+
+
 }

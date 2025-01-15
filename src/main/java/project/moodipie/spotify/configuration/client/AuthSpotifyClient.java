@@ -14,4 +14,5 @@ public interface AuthSpotifyClient {
 
     @PostMapping(value = "/api/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     LoginResponse login(@RequestBody LoginRequest loginRequest);
+
 }

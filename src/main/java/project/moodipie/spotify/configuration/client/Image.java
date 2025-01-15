@@ -6,13 +6,9 @@ import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AlbumResponse {
-    private AlbumWrapper albums;
+public class Image {
+    private String url;
+    private Integer height;
+    private Integer width;
 
-    public AlbumResponse(AlbumWrapper albums) {
-        this.albums = albums;
-    }
-
-    public AlbumResponse() {
-    }
 }

@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AlbumResponse {
-    private AlbumWrapper albums;
+public class TrackWrapper {
+    private List<Track> items;
 
-    public AlbumResponse(AlbumWrapper albums) {
-        this.albums = albums;
-    }
-
-    public AlbumResponse() {
+    public TrackWrapper(List<Track> items) {
+        this.items = items;
     }
 }

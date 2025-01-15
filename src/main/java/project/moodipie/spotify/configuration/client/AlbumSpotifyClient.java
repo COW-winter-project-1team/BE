@@ -14,4 +14,6 @@ public interface AlbumSpotifyClient {
 
     @GetMapping(value = "/v1/browse/new-releases", produces = MediaType.APPLICATION_JSON_VALUE)
     AlbumResponse getReleases(@RequestHeader("Authorization") String authorization);
+
+
 }

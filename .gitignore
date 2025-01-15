@@ -22,7 +22,7 @@ bin/
 *.iws
 *.iml
 *.ipr
-*.properties
+spotify.properties
 
 out/
 !**/src/main/**/out/

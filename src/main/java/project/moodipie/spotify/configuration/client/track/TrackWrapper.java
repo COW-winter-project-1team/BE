@@ -1,8 +1,9 @@
-package project.moodipie.spotify.configuration.client;
+package project.moodipie.spotify.configuration.client.track;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
+import project.moodipie.spotify.configuration.client.Track;
 
 import java.util.List;
 

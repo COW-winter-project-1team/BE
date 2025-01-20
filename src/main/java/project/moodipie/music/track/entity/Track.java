@@ -2,6 +2,7 @@ package project.moodipie.music.track.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.moodipie.music.playlist.entity.Playlist;
@@ -14,14 +15,24 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Track {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "track_id")
-    private Long id;
+    private String id;
+    private String name;
 
-    private String title;
-    private String artist;
-    private String img;
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
+    private List<Artist> artist;
+    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL)
+    private List<Image> image;
 
     @OneToMany(mappedBy = "track", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Playlist> playlists = new ArrayList<>();
+
+
+    @Builder
+    public Track(String id, String name, List<Artist> artist, List<Image> image) {
+        this.id = id;
+        this.name = name;
+        this.artist = artist;
+        this.image = image;
+    }
 }

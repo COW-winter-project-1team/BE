@@ -1,12 +1,13 @@
-package project.moodipie.spotify.configuration.client;
+package project.moodipie.spotify.configuration.client.track;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
-import project.moodipie.spotify.configuration.client.track.TrackWrapper;
 
-@Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TrackResponse {
-    private TrackWrapper tracks;
+@Data
+public class GetTrack {
+    private String id;
+    private String name;
+    private AlbumTrack album;
 }

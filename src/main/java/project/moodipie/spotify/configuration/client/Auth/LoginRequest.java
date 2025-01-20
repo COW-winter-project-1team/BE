@@ -1,4 +1,4 @@
-package project.moodipie.spotify.configuration.client;
+package project.moodipie.spotify.configuration.client.Auth;
 
 import feign.form.FormProperty;
 import lombok.Data;

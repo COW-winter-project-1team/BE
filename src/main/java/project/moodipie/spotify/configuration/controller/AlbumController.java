@@ -1,5 +1,6 @@
 package project.moodipie.spotify.configuration.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class AlbumController {
     }
 
     @GetMapping("/tracks")
-    public ResponseEntity<List<GetTrack>> getTracks(String ids){
+    public String getTracks(String ids) throws JsonProcessingException {
         return trackService.getTracks(ids);
     }
 }

@@ -6,28 +6,27 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String url;
-    private Integer height;
-    private Integer width;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "track_id")
-    private Track track;
+    @JoinColumn(name = "album_id")
+    private Album album;
 
     @Builder
-    public Image(String url, Integer height, Integer width, Track track){
+    public Image(String url, int height, int width, Album album) {
         this.url = url;
-        this.height = height;
-        this.width = width;
-        this.track = track;
+        this.album = album;
     }
 }

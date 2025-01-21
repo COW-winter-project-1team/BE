@@ -12,22 +12,27 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Artist {
+public class Album {
     @Id
-    @Column(name = "artist_id")
+    @Column(name = "album_id")
     private String id;
 
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "album_id")
-    private Album album;
+    @JoinColumn(name = "track_id")
+    private Track track;
+
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
+    List<Artist> artists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
+    List<Image> images = new ArrayList<>();
 
     @Builder
-    public Artist(String id, String name, Album album) {
+    public Album(String id, String name, Track track) {
         this.id = id;
         this.name = name;
-        this.album = album;
+        this.track = track;
     }
-
 }

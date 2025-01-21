@@ -17,22 +17,15 @@ public class Track {
     @Id
     @Column(name = "track_id")
     private String id;
+
     private String name;
 
-    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
-    private List<Artist> artist;
-    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL)
-    private List<Image> image;
-
-    @OneToMany(mappedBy = "track", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Playlist> playlists = new ArrayList<>();
-
+    @OneToMany(mappedBy = "track", cascade = CascadeType.ALL)
+    List<Album> albums = new ArrayList<>();
 
     @Builder
-    public Track(String id, String name, List<Artist> artist, List<Image> image) {
+    public Track(String id, String name) {
         this.id = id;
         this.name = name;
-        this.artist = artist;
-        this.image = image;
     }
 }

@@ -1,5 +1,6 @@
 package project.moodipie.spotify.configuration.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public interface TrackSpotifyClient {
 
 
     @GetMapping(value = "/v1/tracks", produces = MediaType.APPLICATION_JSON_VALUE)
-    TrackResponseForTrack getTracks(
+    JsonNode getTracks(
             @RequestHeader("Authorization") String authorization,
             @RequestParam("ids") String query
     );

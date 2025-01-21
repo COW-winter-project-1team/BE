@@ -14,7 +14,4 @@ public class AlbumTrack {
 
     private List<Artist> artists;
     private List<Image> images;
-
-
-
 }

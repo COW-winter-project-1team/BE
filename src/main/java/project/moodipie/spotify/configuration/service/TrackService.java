@@ -1,5 +1,10 @@
 package project.moodipie.spotify.configuration.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,11 +22,15 @@ public class TrackService {
     private final AuthSpotifyClient authSpotifyClient;
     private final AlbumSpotifyClient albumSpotifyClient;
     private final TrackSpotifyClient trackSpotifyClient;
+    private final ObjectMapper objectMapper;
 
-    public TrackService(AuthSpotifyClient authSpotifyClient, AlbumSpotifyClient albumSpotifyClient, TrackSpotifyClient trackSpotifyClient) {
+
+
+    public TrackService(AuthSpotifyClient authSpotifyClient, AlbumSpotifyClient albumSpotifyClient, TrackSpotifyClient trackSpotifyClient, ObjectMapper objectMapper) {
         this.authSpotifyClient = authSpotifyClient;
         this.albumSpotifyClient = albumSpotifyClient;
         this.trackSpotifyClient = trackSpotifyClient;
+        this.objectMapper = objectMapper;
     }
 
     public ResponseEntity<List<Album>> getalbum(){
@@ -59,15 +68,38 @@ public class TrackService {
 
     }
 
-    public ResponseEntity<List<GetTrack>> getTracks(String ids) {
+    public String getTracks(String ids) throws JsonProcessingException {
         LoginRequest request = new LoginRequest(
                 "client_credentials",
                 "97bc0e5f8320421eaf8f9383ae3399be",
                 "f7e81d2bcfd04c9393925e0bfc4493f9"
         );
         String token = authSpotifyClient.login(request).getAccessToken();
-        TrackResponseForTrack response = trackSpotifyClient.getTracks("Bearer " + token, ids);
+        JsonNode response = trackSpotifyClient.getTracks("Bearer " + token, ids);
         System.out.println("response = " + response);
-        return ResponseEntity.ok(response.getTracks());
+        JsonNode tracksNode = response.path("tracks");
+        ArrayNode resultArrayNode = objectMapper.createArrayNode();
+        for (JsonNode trackNode : tracksNode) {
+        // 트랙 이름 가져오기
+        String trackName = trackNode.path("name").asText();
+        String imageUrl = trackNode.path("album").path("images").get(0).path("url").asText();
+        String artistId = trackNode.path("artists").get(0).path("id").asText();
+        String artistName = trackNode.path("artists").get(0).path("name").asText();
+
+        ObjectNode trackInfoNode = objectMapper.createObjectNode();
+            trackInfoNode.put("trackName", trackName);
+            trackInfoNode.put("artistId", artistId);
+            trackInfoNode.put("imageUrl", imageUrl);
+            trackInfoNode.put("artistName", artistName);
+
+            resultArrayNode.add(trackInfoNode);
+}
+        try {
+            return objectMapper.writeValueAsString(resultArrayNode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error converting response to JSON";
+        }
+
     }
 }

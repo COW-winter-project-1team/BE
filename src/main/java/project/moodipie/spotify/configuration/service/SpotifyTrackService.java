@@ -1,6 +1,7 @@
 package project.moodipie.spotify.configuration.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.spotify.configuration.client.*;
 import project.moodipie.spotify.configuration.client.Auth.AuthSpotifyClient;
 import project.moodipie.spotify.configuration.client.Auth.LoginRequest;
@@ -15,8 +17,8 @@ import project.moodipie.spotify.configuration.client.Auth.LoginRequest;
 import java.util.List;
 import java.util.Optional;
 
-//@Service
-public class TrackService {
+@Service
+public class SpotifyTrackService {
     private final AuthSpotifyClient authSpotifyClient;
     private final AlbumSpotifyClient albumSpotifyClient;
     private final TrackSpotifyClient trackSpotifyClient;
@@ -24,7 +26,7 @@ public class TrackService {
 
 
 
-    public TrackService(AuthSpotifyClient authSpotifyClient, AlbumSpotifyClient albumSpotifyClient, TrackSpotifyClient trackSpotifyClient, ObjectMapper objectMapper) {
+    public SpotifyTrackService(AuthSpotifyClient authSpotifyClient, AlbumSpotifyClient albumSpotifyClient, TrackSpotifyClient trackSpotifyClient, ObjectMapper objectMapper) {
         this.authSpotifyClient = authSpotifyClient;
         this.albumSpotifyClient = albumSpotifyClient;
         this.trackSpotifyClient = trackSpotifyClient;
@@ -66,7 +68,7 @@ public class TrackService {
 
     }
 
-    public ArrayNode getTracks(String ids) throws JsonProcessingException {
+    public List<CreateTrackRequest> getTracks(String ids) throws JsonProcessingException {
         LoginRequest request = new LoginRequest(
                 "client_credentials",
                 "97bc0e5f8320421eaf8f9383ae3399be",
@@ -93,7 +95,7 @@ public class TrackService {
             resultArrayNode.add(objectNode);
         }
 
-        return resultArrayNode;
+        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>(){});
 
 //        try {
 //            return objectMapper.writeValueAsString(resultArrayNode);

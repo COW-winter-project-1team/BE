@@ -5,15 +5,20 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
+import project.moodipie.music.track.service.TrackService;
 import project.moodipie.spotify.configuration.client.*;
-import project.moodipie.spotify.configuration.service.TrackService;
+import project.moodipie.spotify.configuration.service.SpotifyTrackService;
 
-//@RestController
+import java.util.List;
+
+@RestController
 @RequestMapping("/spotify/api")
 @RequiredArgsConstructor
 public class AlbumController {
 
 
+    private final SpotifyTrackService spotifyTrackService;
     private final TrackService trackService;
 
 
@@ -21,11 +26,12 @@ public class AlbumController {
     public ResponseEntity<Track> helloWorld2(@PathVariable("name") String name,       // 곡 제목
                                              @PathVariable("artist") String artist) {
 
-        return trackService.SearchTrack(name,artist);
+        return spotifyTrackService.SearchTrack(name,artist);
     }
 
-    @GetMapping("/tracks")
-    public ArrayNode getTracks(String ids) throws JsonProcessingException {
-        return trackService.getTracks(ids);
+    @PostMapping("/tracks")
+    public void getTracks(String ids) throws JsonProcessingException {
+        List<CreateTrackRequest> tracks = spotifyTrackService.getTracks(ids);
+        trackService.save(tracks);
     }
 }

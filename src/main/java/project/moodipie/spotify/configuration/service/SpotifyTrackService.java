@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,31 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SpotifyTrackService {
     private final AuthSpotifyClient authSpotifyClient;
-    private final AlbumSpotifyClient albumSpotifyClient;
     private final TrackSpotifyClient trackSpotifyClient;
     private final ObjectMapper objectMapper;
-
-
-
-    public SpotifyTrackService(AuthSpotifyClient authSpotifyClient, AlbumSpotifyClient albumSpotifyClient, TrackSpotifyClient trackSpotifyClient, ObjectMapper objectMapper) {
-        this.authSpotifyClient = authSpotifyClient;
-        this.albumSpotifyClient = albumSpotifyClient;
-        this.trackSpotifyClient = trackSpotifyClient;
-        this.objectMapper = objectMapper;
-    }
-
-    public ResponseEntity<List<Album>> getalbum(){
-        LoginRequest request = new LoginRequest(
-                "client_credentials",
-                "97bc0e5f8320421eaf8f9383ae3399be",
-                "f7e81d2bcfd04c9393925e0bfc4493f9"
-        );
-        String token = authSpotifyClient.login(request).getAccessToken();
-        AlbumResponse response = albumSpotifyClient.getReleases("Bearer " + token);
-        return ResponseEntity.ok(response.getAlbums().getItems());
-    }
 
     public ResponseEntity<Track> SearchTrack(String name, String artist){
         LoginRequest request = new LoginRequest(
@@ -96,13 +77,6 @@ public class SpotifyTrackService {
         }
 
         return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>(){});
-
-//        try {
-//            return objectMapper.writeValueAsString(resultArrayNode);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "Error converting response to JSON";
-//        }
 
     }
 }

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.moodipie.music.PlaylistTrack;
 import project.moodipie.music.playlist.entity.Playlist;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class Track {
     private String imageUrl;
 
     @OneToMany(mappedBy = "track", cascade = CascadeType.ALL)
-    List<Playlist> playlists= new ArrayList<>();
+    List<PlaylistTrack> playlistTracks = new ArrayList<>();
 
     @Builder
     public Track(String id, String trackName, String artistName, String imageUrl) {

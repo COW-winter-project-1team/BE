@@ -17,15 +17,21 @@ public class Track {
     @Id
     @Column(name = "track_id")
     private String id;
-
-    private String name;
+    @Column(name = "track_name")
+    private String trackName;
+    @Column(name = "artist_name")
+    private String artistName;
+    @Column(name = "image_Url")
+    private String imageUrl;
 
     @OneToMany(mappedBy = "track", cascade = CascadeType.ALL)
-    List<Album> albums = new ArrayList<>();
+    List<Playlist> playlists= new ArrayList<>();
 
     @Builder
-    public Track(String id, String name) {
+    public Track(String id, String trackName, String artistName, String imageUrl) {
         this.id = id;
-        this.name = name;
+        this.trackName = trackName;
+        this.artistName = artistName;
+        this.imageUrl = imageUrl;
     }
 }

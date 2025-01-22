@@ -1,16 +1,14 @@
 package project.moodipie.spotify.configuration.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.spotify.configuration.client.*;
-import project.moodipie.spotify.configuration.client.track.GetTrack;
 import project.moodipie.spotify.configuration.service.TrackService;
 
-import java.util.List;
-
-@RestController
+//@RestController
 @RequestMapping("/spotify/api")
 @RequiredArgsConstructor
 public class AlbumController {
@@ -27,7 +25,7 @@ public class AlbumController {
     }
 
     @GetMapping("/tracks")
-    public String getTracks(String ids) throws JsonProcessingException {
+    public ArrayNode getTracks(String ids) throws JsonProcessingException {
         return trackService.getTracks(ids);
     }
 }

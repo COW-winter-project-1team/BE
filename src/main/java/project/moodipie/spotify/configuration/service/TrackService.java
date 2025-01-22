@@ -11,13 +11,11 @@ import org.springframework.stereotype.Service;
 import project.moodipie.spotify.configuration.client.*;
 import project.moodipie.spotify.configuration.client.Auth.AuthSpotifyClient;
 import project.moodipie.spotify.configuration.client.Auth.LoginRequest;
-import project.moodipie.spotify.configuration.client.track.GetTrack;
-import project.moodipie.spotify.configuration.client.track.TrackResponseForTrack;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+//@Service
 public class TrackService {
     private final AuthSpotifyClient authSpotifyClient;
     private final AlbumSpotifyClient albumSpotifyClient;
@@ -68,7 +66,7 @@ public class TrackService {
 
     }
 
-    public String getTracks(String ids) throws JsonProcessingException {
+    public ArrayNode getTracks(String ids) throws JsonProcessingException {
         LoginRequest request = new LoginRequest(
                 "client_credentials",
                 "97bc0e5f8320421eaf8f9383ae3399be",
@@ -78,28 +76,31 @@ public class TrackService {
         JsonNode response = trackSpotifyClient.getTracks("Bearer " + token, ids);
         System.out.println("response = " + response);
         JsonNode tracksNode = response.path("tracks");
+
         ArrayNode resultArrayNode = objectMapper.createArrayNode();
         for (JsonNode trackNode : tracksNode) {
-        // 트랙 이름 가져오기
-        String trackName = trackNode.path("name").asText();
-        String imageUrl = trackNode.path("album").path("images").get(0).path("url").asText();
-        String artistId = trackNode.path("artists").get(0).path("id").asText();
-        String artistName = trackNode.path("artists").get(0).path("name").asText();
+            String trackId = trackNode.path("id").asText();
+            String trackName = trackNode.path("name").asText();
+            String artistName = trackNode.path("artists").get(0).path("name").asText();
+            String imageUrl = trackNode.path("album").path("images").get(0).path("url").asText();
 
-        ObjectNode trackInfoNode = objectMapper.createObjectNode();
-            trackInfoNode.put("trackName", trackName);
-            trackInfoNode.put("artistId", artistId);
-            trackInfoNode.put("imageUrl", imageUrl);
-            trackInfoNode.put("artistName", artistName);
+            ObjectNode objectNode = objectMapper.createObjectNode();
+            objectNode.put("trackId", trackId);
+            objectNode.put("trackName", trackName);
+            objectNode.put("artistName", artistName);
+            objectNode.put("imageUrl", imageUrl);
 
-            resultArrayNode.add(trackInfoNode);
-}
-        try {
-            return objectMapper.writeValueAsString(resultArrayNode);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error converting response to JSON";
+            resultArrayNode.add(objectNode);
         }
+
+        return resultArrayNode;
+
+//        try {
+//            return objectMapper.writeValueAsString(resultArrayNode);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "Error converting response to JSON";
+//        }
 
     }
 }

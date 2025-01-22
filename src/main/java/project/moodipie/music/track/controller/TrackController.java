@@ -10,7 +10,7 @@ import project.moodipie.music.track.service.TrackService;
 
 import java.util.List;
 
-//@RestController
+@RestController
 @RequestMapping("/tracks")
 @RequiredArgsConstructor
 public class TrackController {
@@ -18,7 +18,7 @@ public class TrackController {
     private final TrackService trackService;
 
     @PostMapping("/save")
-    public void createTracks(@RequestBody CreateTrackRequest createTrackRequest) {
-
+    public void createTracks(@RequestBody List<CreateTrackRequest> createTrackRequest) {
+        trackService.save(createTrackRequest);
     }
 }

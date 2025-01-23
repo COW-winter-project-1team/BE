@@ -1,4 +1,4 @@
-package project.moodipie.spotify.configuration.client;
+package project.moodipie.spotify.configuration.client.Auth;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -14,4 +14,5 @@ public interface AuthSpotifyClient {
 
     @PostMapping(value = "/api/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     LoginResponse login(@RequestBody LoginRequest loginRequest);
+
 }

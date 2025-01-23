@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 )
 public interface TrackSpotifyClient {
     @GetMapping(value = "/v1/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    TrackResponse searchTrack(
+    JsonNode searchTrack(
             @RequestHeader("Authorization") String authorization,
             @RequestParam("q") String query,
             @RequestParam("type") String type);

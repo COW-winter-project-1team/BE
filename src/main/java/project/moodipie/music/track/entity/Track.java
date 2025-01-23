@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.moodipie.music.PlaylistTrack;
-import project.moodipie.music.playlist.entity.Playlist;
+import project.moodipie.music.playlist.entity.PlaylistTrack;
 
 import java.util.ArrayList;
 import java.util.List;

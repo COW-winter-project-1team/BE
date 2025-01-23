@@ -25,7 +25,7 @@ public class SpotifyTrackService {
     private final TrackSpotifyClient trackSpotifyClient;
     private final ObjectMapper objectMapper;
 
-    public ResponseEntity<Track> SearchTrack(String name, String artist){
+    public JsonNode SearchTrack(String name, String artist) {
         LoginRequest request = new LoginRequest(
                 "client_credentials",
                 "97bc0e5f8320421eaf8f9383ae3399be",
@@ -34,18 +34,18 @@ public class SpotifyTrackService {
         String query = String.format("track:%s artist:%s", name, artist);
         System.out.println("Encoded Query: " + query);
         String token = authSpotifyClient.login(request).getAccessToken();
-        TrackResponse response = trackSpotifyClient.searchTrack("Bearer " + token, query, "track");
+        JsonNode response = trackSpotifyClient.searchTrack("Bearer " + token, query, "track");
         System.out.println("response = " + response);
-        Optional<Track> exactMatch = response.getTracks().getItems().stream()
-                .filter(track -> track.getAlbum().getName().equalsIgnoreCase(name))
-                .filter(track -> track.getAlbum().getArtists().stream()
-                        .anyMatch(a -> a.getName().equalsIgnoreCase(artist)))
-                .findFirst();
-        System.out.println("exactMatch = " + exactMatch);
-        // 5. 결과 반환
-        return exactMatch
-                .map(ResponseEntity::ok) // 정확한 결과 반환
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+
+        JsonNode jsonsNode = response.path("tracks");
+
+        ObjectNode arrayNode = objectMapper.createObjectNode();
+
+        String id = jsonsNode.path("items").get(0).path("id").asText();
+
+        ObjectNode id1 = arrayNode.put("id", id);
+
+        return id1;
 
     }
 
@@ -76,7 +76,8 @@ public class SpotifyTrackService {
             resultArrayNode.add(objectNode);
         }
 
-        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>(){});
+        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>() {
+        });
 
     }
 }

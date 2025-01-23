@@ -1,6 +1,7 @@
 package project.moodipie.spotify.configuration.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class AlbumController {
 
 
     @GetMapping("/tracks/{name}/{artist}")
-    public ResponseEntity<Track> helloWorld2(@PathVariable("name") String name,       // 곡 제목
-                                             @PathVariable("artist") String artist) {
+    public JsonNode helloWorld2(@PathVariable("name") String name,       // 곡 제목
+                                @PathVariable("artist") String artist) {
 
         return spotifyTrackService.SearchTrack(name,artist);
     }

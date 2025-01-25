@@ -25,6 +25,7 @@ public class User {
     private String password;
     private boolean firstLogin;
     private Integer profileImage;
+
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
     private List<Playlist> playlists = new ArrayList<>();
 

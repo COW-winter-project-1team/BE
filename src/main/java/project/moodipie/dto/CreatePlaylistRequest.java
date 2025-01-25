@@ -8,7 +8,7 @@ import project.moodipie.music.playlist.entity.Playlist;
 public class CreatePlaylistRequest {
 
     private String playlistTitle;
-    private String musiclist;
+    private String musicclist;
     private Emotion emotion;
     private String PlaylistURL;
     private int playlistpicture;
@@ -16,7 +16,7 @@ public class CreatePlaylistRequest {
     public Playlist toEntity(){
         return  Playlist.builder()
                 .title(playlistTitle)
-                .playlistImage(musiclist)
+                .playlistImage(musicclist)
                 .emotion(emotion)
                 .build();
     }

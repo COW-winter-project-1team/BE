@@ -5,16 +5,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.music.track.service.TrackService;
 
 import java.util.List;
 
-@Tag(name="음악 CRUD", description = "스포티파이에서 가져온 음악정보 DB 저장")
+@Tag(name="음악 CRUD", description = "스포티파이에서 가져온 음악정보")
 @RestController
 @RequestMapping("/tracks")
 @RequiredArgsConstructor
@@ -31,4 +28,5 @@ public class TrackController {
     public void createTracks(@RequestBody List<CreateTrackRequest> createTrackRequest) {
         trackService.save(createTrackRequest);
     }
+
 }

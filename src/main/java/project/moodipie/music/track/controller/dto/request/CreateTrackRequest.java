@@ -6,7 +6,6 @@ import project.moodipie.music.track.entity.Track;
 
 @Getter
 public class CreateTrackRequest {
-
     @Schema(description = "트랙 ID", example = "sdakfjiosdwn1dnfsd")
     private String trackId;
     @Schema(description = "트랙 제목", example = "바다의 왕자")

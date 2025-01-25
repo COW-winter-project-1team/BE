@@ -21,9 +21,8 @@ public class Playlist {
     @Column(name = "playlist_id")
     private Long id;
 
-    //TODO: User 객체 확인 후.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     private String title;
@@ -37,7 +36,8 @@ public class Playlist {
 
 
     @Builder
-    public Playlist(final String title, final String playlistImage, final Date timestamp, final Emotion emotion) {
+    public Playlist(final User user, final String title, final String playlistImage, final Date timestamp, final Emotion emotion) {
+        this.user = user;
         this.title = title;
         this.playlistImage = playlistImage;
         this.timestamp = timestamp;

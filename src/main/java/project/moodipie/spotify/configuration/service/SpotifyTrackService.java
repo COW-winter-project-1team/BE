@@ -41,7 +41,7 @@ public class SpotifyTrackService {
         if (ids.endsWith(",")) {
             ids = ids.substring(0, ids.length() - 1);
         }
-        return getTracks(ids);   //이거 수정
+        return getTracks(ids);
     }
 
     public JsonNode searchTrack(String name, String artist) {

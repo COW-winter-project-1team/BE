@@ -18,11 +18,13 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+spotify.yml
+
 .idea
 *.iws
 *.iml
 *.ipr
-spotify.properties
+
 
 out/
 !**/src/main/**/out/

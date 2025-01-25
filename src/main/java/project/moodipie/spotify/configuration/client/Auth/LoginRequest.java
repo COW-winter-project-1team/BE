@@ -14,8 +14,6 @@ public class LoginRequest {
     @FormProperty("client_secret")
     private String clientSecret;
 
-    public LoginRequest() {
-    }
 
     public LoginRequest(String grantType, String clientId, String clientSecret) {
         this.grantType = grantType;

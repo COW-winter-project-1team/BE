@@ -12,10 +12,9 @@ import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.spotify.configuration.client.*;
 import project.moodipie.spotify.configuration.client.Auth.AuthSpotifyClient;
 import project.moodipie.spotify.configuration.client.Auth.LoginRequest;
+import project.moodipie.spotify.configuration.client.SpotifyYml;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +22,7 @@ public class SpotifyTrackService {
     private final AuthSpotifyClient authSpotifyClient;
     private final TrackSpotifyClient trackSpotifyClient;
     private final ObjectMapper objectMapper;
+    private final SpotifyYml spotifyYml;
 
     public String SearchTracks(List<String> trackNames, List<String> artistNames) throws JsonProcessingException {
         if (trackNames.size() != artistNames.size()) {
@@ -90,9 +90,9 @@ public class SpotifyTrackService {
 
     private String getToken() {
         LoginRequest request = new LoginRequest(
-                "client_credentials",
-                "97bc0e5f8320421eaf8f9383ae3399be",
-                "f7e81d2bcfd04c9393925e0bfc4493f9"
+                spotifyYml.getGrantType(),
+                spotifyYml.getClientId(),
+                spotifyYml.getClientSecret()
         );
         return authSpotifyClient.login(request).getAccessToken();
     }

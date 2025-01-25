@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
-        name = "AlbumSpotifyClient",
+        name = "TrackSpotifyClient",
         url = "https://api.spotify.com"
 )
 public interface TrackSpotifyClient {

@@ -3,6 +3,8 @@ spring:
     name: moodipie
   main:
     allow-bean-definition-overriding: true
+  config:
+    import: spotify.yml
 
   thymeleaf:
     prefix: classpath:/templates/

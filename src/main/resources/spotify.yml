@@ -1,0 +1,4 @@
+  spotify:
+    grantType: client_credentials
+    clientId: 97bc0e5f8320421eaf8f9383ae3399be
+    clientSecret: f7e81d2bcfd04c9393925e0bfc4493f9

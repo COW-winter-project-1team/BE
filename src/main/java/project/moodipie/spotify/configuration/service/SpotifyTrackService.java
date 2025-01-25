@@ -56,9 +56,7 @@ public class SpotifyTrackService {
 
         String id = jsonsNode.path("items").get(0).path("id").asText();
 
-        ObjectNode id1 = arrayNode.put("id", id);
-
-        return id1;
+        return arrayNode.put("id", id);
 
     }
 

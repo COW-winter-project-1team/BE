@@ -24,14 +24,15 @@ public class SpotifyTrackService {
     private final ObjectMapper objectMapper;
     private final SpotifyYml spotifyYml;
 
-    public String SearchTracks(List<String> trackNames, List<String> artistNames) throws JsonProcessingException {
+
+    public List<CreateTrackRequest> searchTracks(List<String> trackNames, List<String> artistNames) throws JsonProcessingException {
         if (trackNames.size() != artistNames.size()) {
             throw new IllegalArgumentException("Track names and artist names must have the same size.");}
         String ids = "";
         for (int i = 0; i < trackNames.size(); i++) {
             String name = trackNames.get(i);
             String artist = artistNames.get(i);
-            JsonNode trackJson = SearchTrack(name, artist);
+            JsonNode trackJson = searchTrack(name, artist);
             String id = trackJson.path("id").asText();
             if (!id.isEmpty()) {
                 ids += id + ",";
@@ -40,11 +41,10 @@ public class SpotifyTrackService {
         if (ids.endsWith(",")) {
             ids = ids.substring(0, ids.length() - 1);
         }
-        System.out.println(ids);
-        return ids;     //return getTracks(ids);
+        return getTracks(ids);   //이거 수정
     }
 
-    public JsonNode SearchTrack(String name, String artist) {
+    public JsonNode searchTrack(String name, String artist) {
         String query = String.format("track:%s artist:%s", name, artist);
         System.out.println("Encoded Query: " + query);
         JsonNode response = trackSpotifyClient.searchTrack("Bearer " + getToken(), query, "track");
@@ -83,8 +83,7 @@ public class SpotifyTrackService {
             resultArrayNode.add(objectNode);
         }
 
-        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>() {
-        });
+        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>() {});
 
     }
 

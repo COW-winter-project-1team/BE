@@ -1,0 +1,32 @@
+[33m02ae4af[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m HEAD@{0}: merge origin/develop: Fast-forward
+[33m00698ab[m HEAD@{1}: checkout: moving from develop to develop
+[33m00698ab[m HEAD@{2}: branch: Reset to origin/develop
+[33m00698ab[m HEAD@{3}: commit (merge): Merge branch 'refs/heads/featuer/방현우-장르트랙' into develop
+[33m0387477[m HEAD@{4}: checkout: moving from featuer/방현우-장르트랙 to develop
+[33mb2489df[m HEAD@{5}: commit: refactor: 트랙 검색기능 단순화
+[33mab12b43[m HEAD@{6}: commit: feat: 플레이리스트 저장기능 구현
+[33m8427f2d[m HEAD@{7}: commit: feat: 스포티파이 api에서 얻은 track 정보 db에 바로 저장
+[33m9b8bcf9[m HEAD@{8}: commit: feat: 객체 저장 기능
+[33mda0a28e[m HEAD@{9}: commit: feat: objectMapper로 변경
+[33m37d6be3[m HEAD@{10}: commit: feat: 트랙 id로 검색 기능, 엔티티 추가
+[33mec50ffd[m HEAD@{11}: merge origin/featuer/방현우-장르트랙: Fast-forward
+[33mc48db6e[m HEAD@{12}: commit: feat: 트랙 검색 기능
+[33me7a0faa[m HEAD@{13}: commit: refactor: git ignore 설정
+[33m9247728[m HEAD@{14}: commit: refactor: git ignore 설정
+[33m6ef1a5b[m HEAD@{15}: commit: feat: 스포티파이 음악 장르별 검색 기능
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{16}: checkout: moving from develop to featuer/방현우-장르트랙
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{17}: checkout: moving from feature to develop
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{18}: checkout: moving from develop to feature
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{19}: checkout: moving from develop to develop
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{20}: branch: Reset to origin/develop
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{21}: merge refs/heads/feature: Fast-forward
+[33m733f6e4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/hotfix[m[33m, [m[1;32mmain[m[33m)[m HEAD@{22}: checkout: moving from feature to develop
+[33m500e5ad[m[33m ([m[1;32mfeature[m[33m)[m HEAD@{23}: commit: feat: 스포티파이 토근 가져오기 성공
+[33m40d0ab3[m HEAD@{24}: merge origin/feature: Fast-forward
+[33mad8f2da[m HEAD@{25}: commit: feat: 외부 api openFeign
+[33me2b27d5[m HEAD@{26}: merge origin/feature: Fast-forward
+[33mfc346ba[m HEAD@{27}: commit: feat: 외부 api 준비
+[33m34ccdd6[m HEAD@{28}: commit: feat: 외부 api 호출
+[33m733f6e4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/hotfix[m[33m, [m[1;32mmain[m[33m)[m HEAD@{29}: checkout: moving from main to feature
+[33m733f6e4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/hotfix[m[33m, [m[1;32mmain[m[33m)[m HEAD@{30}: Branch: renamed refs/heads/master to refs/heads/main
+[33m733f6e4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/hotfix[m[33m, [m[1;32mmain[m[33m)[m HEAD@{32}: commit (initial): 초기 세팅

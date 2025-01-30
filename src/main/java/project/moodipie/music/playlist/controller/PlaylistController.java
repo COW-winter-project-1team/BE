@@ -42,4 +42,10 @@ private final PlaylistService playlistService;
         playlistService.updatePlaylist(id, updatePlaylistRequest);
     }
 
+    @DeleteMapping("/playlists/{id}/tracks")
+    public void deletePlaylistTrack(@PathVariable("id") Long id,
+                                    @RequestBody List<Long> ids) {
+        playlistService.deletePlaylistTrack(id, ids);
+    }
+
 }

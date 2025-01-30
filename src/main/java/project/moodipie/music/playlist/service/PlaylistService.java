@@ -15,6 +15,7 @@ import project.moodipie.music.playlist.repository.PlaylistRepository;
 import project.moodipie.music.track.entity.Track;
 import project.moodipie.music.track.repository.TrackRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +33,13 @@ public class PlaylistService {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         Playlist playlist = request.toEntity(user);
         playlistRepository.save(playlist);
-
+        int playlistTrackId = 0;
         List<Track> tracks = trackRepository.findAllById(request.getTrackIds());
-        List<PlaylistTrack> playlistTracks = tracks.stream().map(track -> new PlaylistTrack(playlist, track)).toList();
+        List<PlaylistTrack> playlistTracks = new ArrayList<>();
+        for (Track track : tracks) {
+            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, ++playlistTrackId);
+            playlistTracks.add(playlistTrack);
+        }
 
         playlistTrackRepository.saveAll(playlistTracks);
     }
@@ -55,5 +60,9 @@ public class PlaylistService {
     public void updatePlaylist(Long id, UpdatePlaylistRequest updatePlaylistRequest) {
         Playlist playlist = playlistRepository.getReferenceById(id);
         playlist.update(updatePlaylistRequest);
+    }
+
+    public void deletePlaylistTrack(Long id, List<Long> ids) {
+        PlaylistTrack playlistTrack = playlistTrackRepository.getReferenceById(id);
     }
 }

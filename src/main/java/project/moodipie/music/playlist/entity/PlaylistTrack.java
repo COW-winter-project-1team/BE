@@ -11,23 +11,26 @@ import project.moodipie.music.track.entity.Track;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "playlist_track")
+@IdClass(PlaylistTrackId.class)
 public class PlaylistTrack {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "playlist_id")
     private Playlist playlist;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "track_id")
     private Track track;
 
+    private int playlistTrackId;
 
     @Builder
-    public PlaylistTrack(Playlist playlist, Track track) {
+    public PlaylistTrack(Playlist playlist, Track track, int playlistTrackId) {
         this.playlist = playlist;
         this.track = track;
+        this.playlistTrackId = playlistTrackId;
     }
+
 }

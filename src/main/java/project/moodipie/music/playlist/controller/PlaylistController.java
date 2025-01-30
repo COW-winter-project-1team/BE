@@ -34,4 +34,6 @@ private final PlaylistService playlistService;
     public List<PlaylistResponse> findAllPlaylist(@PathVariable("userId") Long userId) {
         return playlistService.findAllPlaylist(userId);
     }
+
+
 }

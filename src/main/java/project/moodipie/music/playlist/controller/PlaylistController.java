@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.playlist.controller.dto.request.CreatePlaylistRequest;
+import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
 import project.moodipie.music.playlist.service.PlaylistService;
 
@@ -30,10 +31,15 @@ private final PlaylistService playlistService;
         playlistService.savePlaylist(request);
     }
 
-    @GetMapping("/user/{userId}/playlists")
-    public List<PlaylistResponse> findAllPlaylist(@PathVariable("userId") Long userId) {
-        return playlistService.findAllPlaylist(userId);
+    @GetMapping("/playlists/{id}")
+    public PlaylistResponse playlistResponse(@PathVariable("id") Long id) {
+        return playlistService.findPlaylistById(id);
     }
 
+    @PutMapping("/playlists/{id}")
+    public void updatePlaylist(@PathVariable("id") Long id,
+                               @RequestBody UpdatePlaylistRequest updatePlaylistRequest){
+        playlistService.updatePlaylist(id, updatePlaylistRequest);
+    }
 
 }

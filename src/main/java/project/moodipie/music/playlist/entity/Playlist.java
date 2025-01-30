@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.moodipie.entity.Emotion;
 import project.moodipie.entity.User;
+import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,4 +45,10 @@ public class Playlist {
         this.emotion = emotion;
     }
 
+    public void update(UpdatePlaylistRequest updatePlaylistRequest) {
+        this.title = updatePlaylistRequest.getTitle();
+        this.playlistImage = updatePlaylistRequest.getPlaylistImage();
+        this.timestamp = updatePlaylistRequest.getTimestamp();
+        this.emotion = updatePlaylistRequest.getEmotion();
+    }
 }

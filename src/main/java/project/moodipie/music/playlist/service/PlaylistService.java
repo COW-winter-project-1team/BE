@@ -43,4 +43,7 @@ public class PlaylistService {
         return playlistRepository.findByUserId(id).stream().map(playlist -> PlaylistResponse.from(playlist)).collect(Collectors.toList());
     }
 
+    public void deletePlaylist(List<Long> ids) {
+        playlistRepository.deleteAllById(ids);
+    }
 }

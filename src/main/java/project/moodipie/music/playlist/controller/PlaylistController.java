@@ -23,12 +23,12 @@ public class PlaylistController {
 
 private final PlaylistService playlistService;
 
-    @Operation(summary = "플레이리스트 생성", description = "가져온 음악을 새로운 플레이리스트에 저장합니다.")
+    @Operation(summary = "플레이리스트 생성", description = "새로운 플레이리스트를 생성합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "저장 성공"),
-            @ApiResponse(responseCode = "400", description = "저장 실패")
+            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(responseCode = "400", description = "생성 실패")
     })
-    @PostMapping("/playlists/save")
+    @PostMapping("/playlists/create")
     public void savePlaylist(@RequestBody CreatePlaylistRequest request) {
         playlistService.savePlaylist(request);
     }

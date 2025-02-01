@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.playlist.controller.dto.request.CreatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.request.PlaylistTrackRequest;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
-import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
 import project.moodipie.music.playlist.service.PlaylistService;
+import project.moodipie.music.track.controller.dto.response.TrackResponse;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ private final PlaylistService playlistService;
     }
 
     @GetMapping("/playlists/{id}")
-    public PlaylistResponse playlistResponse(@PathVariable("id") Long id) {
+    public List<TrackResponse> playlistResponse(@PathVariable("id") Long id) {
         return playlistService.findPlaylistById(id);
     }
 
@@ -48,5 +48,7 @@ private final PlaylistService playlistService;
                                     @RequestBody PlaylistTrackRequest request) {
         playlistService.deletePlaylistTrack(playlistId, request.getTrackId());
     }
+
+
 
 }

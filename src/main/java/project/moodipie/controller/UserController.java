@@ -20,73 +20,74 @@ import project.moodipie.service.UserService;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    @Autowired
     private final UserService userService;
-    @Autowired
-    private HttpSession session;
-    @Autowired
-    private UserRepository userRepository;
+    private final HttpSession session;
+    private final UserRepository userRepository;
 
     @GetMapping("/users")//마이페이지
-    public UserResponse userPage(){
-        SessionUser currentuser = getSessionUser();
-        UserResponse response =new UserResponse(currentuser.getUsername(), currentuser.getPicture());
+    public UserResponse userPage() {
+        SessionUser currentUser = getSessionUser();
+        UserResponse response = new UserResponse(currentUser.getUsername(), currentUser.getPicture());
         return response;
     }
 
     @PutMapping("/users")//회원정보 수정
-    public void updateUser(@RequestBody UpdateUserRequest updateUserRequest){
-        SessionUser currentuser = getSessionUser();
-        userService.updateUser(currentuser.getEmail(), updateUserRequest);
-        User updateduser = userService.findUserByEmail(currentuser.getEmail());
-        this.session.setAttribute("currentuser", new SessionUser(updateduser));
+    public void updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
+        SessionUser currentUser = getSessionUser();
+        userService.updateUser(currentUser.getEmail(), updateUserRequest);
+        User updateduser = userService.findUserByEmail(currentUser.getEmail());
+        this.session.setAttribute("currentUser", new SessionUser(updateduser));
     }
+
     @DeleteMapping("/users")//회원탈퇴
     public void deleteUser() {
-        SessionUser currentuser = getSessionUser();
-        userService.deleteUserByEmail(currentuser.getEmail());
-        session.removeAttribute("currentuser");
+        SessionUser currentUser = getSessionUser();
+        userService.deleteUserByEmail(currentUser.getEmail());
+        session.removeAttribute("currentUser");
     }
 
     @PostMapping("/signup")//회원가입 기능
     public SignUpResponse signup(@RequestBody CreateUserRequest createUserRequest) {
         return userService.signup(createUserRequest);
     }
+
     @GetMapping("/signup")//회원가입 페이지
-    public String signUpPage(){
+    public String signUpPage() {
         return "signup";
     }
 
     @PostMapping("/login")//로그인
     public void login(@RequestBody LoginDto loginDto) {
-        User loginuser  = userService.login(loginDto);
-        SessionUser currentuser = new SessionUser(loginuser);
+        User loginuser = userService.login(loginDto);
+        SessionUser currentUser = new SessionUser(loginuser);
         if (loginuser.isFirstLogin()) {//첫 로그인일 때
-            session.setAttribute("currentuser", currentuser);
+            session.setAttribute("currentUser", currentUser);
             loginuser.setFirstLogin(false);
             userRepository.save(loginuser);
-        }
-        else {
-            session.setAttribute("currentuser", currentuser);// 기존 로그인일 때
+        } else {
+            session.setAttribute("currentUser", currentUser);// 기존 로그인일 때
         }
     }
 
     @GetMapping("/login") // 로그인 페이지
     public String getlogin() {
-        if (session.getAttribute("currentuser") != null) {
+        if (session.getAttribute("currentUser") != null) {
             return "home"; //return "redirect:/home";
         }
         // 로그인 페이지로 이동
         return "login";
     }
+
     @PostMapping("/logout")//로그아웃
     public void logout() {
         session.invalidate();
     }
 
     private SessionUser getSessionUser() {
-        SessionUser currentUser = (SessionUser) session.getAttribute("currentuser");
-        if (currentUser == null) {throw new RestfullException("User is not logged in.", HttpStatus.BAD_REQUEST);}
+        SessionUser currentUser = (SessionUser) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            throw new RestfullException("User is not logged in.", HttpStatus.BAD_REQUEST);
+        }
         return currentUser;
     }
 }

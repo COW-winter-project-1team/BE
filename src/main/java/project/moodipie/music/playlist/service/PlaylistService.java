@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.moodipie.entity.User;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
+import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackResponse;
 import project.moodipie.music.playlist.entity.PlaylistTrack;
 import project.moodipie.music.playlist.repository.PlaylistTrackRepository;
 import project.moodipie.music.playlist.controller.dto.request.CreatePlaylistRequest;
@@ -53,9 +54,14 @@ public class PlaylistService {
         playlistRepository.deleteAllById(ids);
     }
 
-    public List<TrackResponse> findPlaylistById(Long id) {
-        Playlist playlist = playlistRepository.getReferenceById(id);
-        return playlistTrackRepository.getReferenceByPlaylistId(playlist.getId()).stream().map(playlistTrack -> TrackResponse.from(playlistTrack.getTrack())).collect(Collectors.toList());
+    public PlaylistTrackResponse findPlaylistById(Long id) {
+        PlaylistResponse playlist = PlaylistResponse.from(playlistRepository.getReferenceById(id));
+        List<TrackResponse> tracks = playlistTrackRepository.getReferenceByPlaylistId(playlist.getId())
+                .stream()
+                .map(playlistTrack -> TrackResponse.from(playlistTrack.getTrack()))
+                .collect(Collectors.toList());
+
+        return PlaylistTrackResponse.from(playlist, tracks);
     }
 
     public void updatePlaylist(Long id, UpdatePlaylistRequest updatePlaylistRequest) {

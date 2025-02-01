@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
+import project.moodipie.music.track.controller.dto.response.TrackResponse;
 import project.moodipie.music.track.service.TrackService;
 
 import java.util.List;
@@ -29,4 +31,8 @@ public class TrackController {
         trackService.save(createTrackRequest);
     }
 
+    @GetMapping("/{id}")
+    public TrackResponse getTrack(@PathVariable String id) {
+       return trackService.getTrack(id);
+    }
 }

@@ -33,9 +33,9 @@ public class PlaylistService {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         Playlist playlist = request.toEntity(user);
         playlistRepository.save(playlist);
-        int playlistTrackId = 0;
         List<Track> tracks = trackRepository.findAllById(request.getTrackIds());
         List<PlaylistTrack> playlistTracks = new ArrayList<>();
+        Long playlistTrackId = 0L;
         for (Track track : tracks) {
             PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, ++playlistTrackId);
             playlistTracks.add(playlistTrack);
@@ -62,7 +62,13 @@ public class PlaylistService {
         playlist.update(updatePlaylistRequest);
     }
 
-    public void deletePlaylistTrack(Long id, List<Long> ids) {
-        PlaylistTrack playlistTrack = playlistTrackRepository.getReferenceById(id);
+    public void deletePlaylistTrack(Long playlistId, Long trackId) {
+        List<PlaylistTrack> playlistTracks = playlistTrackRepository.getReferenceByPlaylistId(playlistId);
+        for (PlaylistTrack playlistTrack : playlistTracks) {
+            if (playlistTrack.getPlaylistTrackId().equals(trackId)) {
+                playlistTrackRepository.deleteByPlaylistTrackIdAndPlaylistId(trackId,playlistId);
+            }
+        }
+
     }
 }

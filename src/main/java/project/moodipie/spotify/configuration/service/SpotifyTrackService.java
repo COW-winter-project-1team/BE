@@ -44,7 +44,7 @@ public class SpotifyTrackService {
         for (int i = 0; i < trackNames.size(); i++) {
             String name = trackNames.get(i);
             String artist = artistNames.get(i);
-            JsonNode trackJson = searchTrack(name, artist);
+            JsonNode trackJson = searchTrackAtSpotify(name, artist);
             String id = trackJson.path("id").asText();
             if (!id.isEmpty()) {
                 ids += id + ",";
@@ -56,7 +56,7 @@ public class SpotifyTrackService {
         return getTracks(ids);
     }
 
-    private JsonNode searchTrack(String name, String artist) {
+    private JsonNode searchTrackAtSpotify(String name, String artist) {
         String query = String.format("track:%s artist:%s", name, artist);
         JsonNode response = trackSpotifyClient.searchTrack("Bearer " + getToken(), query, "track");
 

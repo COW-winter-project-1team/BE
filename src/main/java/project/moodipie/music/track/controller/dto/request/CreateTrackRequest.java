@@ -15,6 +15,11 @@ public class CreateTrackRequest {
     @Schema(description = "이미지 URL", example = "http://dfdfjiweoif.com")
     private String imageUrl;
 
+    public CreateTrackRequest(String trackName, String artistName) {
+        this.trackName = trackName;
+        this.artistName = artistName;
+    }
+
     public Track toEntity() {
         return Track.builder()
                 .id(trackId)

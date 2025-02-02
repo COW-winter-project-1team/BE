@@ -9,10 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.music.track.service.TrackService;
+import project.moodipie.spotify.configuration.controller.dto.request.SpotifyTrackRequest;
 import project.moodipie.spotify.configuration.service.SpotifyTrackService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/spotify/api")
@@ -27,11 +30,9 @@ public class SpotifyTrackController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
-    @PostMapping("tracks/{name1}/{artist1}/{name2}/{artist2}")
-    public void saveTracks(@PathVariable String artist1, @PathVariable String artist2, @PathVariable String name1, @PathVariable String name2) throws JsonProcessingException {
-        List<String> trackNames = Arrays.asList(name1, name2);
-        List<String> artistNames = Arrays.asList(artist1, artist2);
-        List<CreateTrackRequest> tracks = spotifyTrackService.searchTracks(trackNames, artistNames);
+    @PostMapping("tracks/save")
+    public void saveTracks(@RequestBody List<SpotifyTrackRequest> request) throws JsonProcessingException {
+        List<CreateTrackRequest> tracks = spotifyTrackService.createTrackRequests(request);
         trackService.save(tracks);
     }
 }

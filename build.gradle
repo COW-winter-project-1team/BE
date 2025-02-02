@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.testcontainers:testcontainers:1.19.0'
     implementation 'org.testcontainers:mysql:1.19.0'
     implementation "org.springframework.boot:spring-boot-configuration-processor"
-    implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     //spotify
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:9.1.0'

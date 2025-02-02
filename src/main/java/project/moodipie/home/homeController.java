@@ -1,6 +1,7 @@
 package project.moodipie.home;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
@@ -39,7 +40,9 @@ public class homeController {
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
     @DeleteMapping("/home")
-    public void deletePlaylist(@RequestBody List<Long> ids) {
+    public void deletePlaylist(@RequestBody
+                                   @Schema(description = "삭제할 플레이리스트의 ID 목록", example = "[2, 3]")
+                                   List<Long> ids) {
         playlistService.deletePlaylist(ids);
     }
 

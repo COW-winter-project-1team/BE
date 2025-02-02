@@ -13,7 +13,9 @@ import project.moodipie.spotify.configuration.client.*;
 import project.moodipie.spotify.configuration.client.Auth.AuthSpotifyClient;
 import project.moodipie.spotify.configuration.client.Auth.LoginRequest;
 import project.moodipie.spotify.configuration.client.SpotifyYml;
+import project.moodipie.spotify.configuration.controller.dto.request.SpotifyTrackRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,14 +27,24 @@ public class SpotifyTrackService {
     private final SpotifyYml spotifyYml;
 
 
-    public List<CreateTrackRequest> searchTracks(List<String> trackNames, List<String> artistNames) throws JsonProcessingException {
+    public List<CreateTrackRequest> createTrackRequests(List<SpotifyTrackRequest> request) throws JsonProcessingException {
+        List<String> trackNames  = new ArrayList<>();
+        List<String> artistNames = new ArrayList<>() ;
+        for (SpotifyTrackRequest spotifyTrackRequest : request) {
+            trackNames.add(spotifyTrackRequest.getTrackName());
+            artistNames.add(spotifyTrackRequest.getArtistName());
+        }
+        return searchTracks(trackNames, artistNames);
+    }
+
+    private List<CreateTrackRequest> searchTracks(List<String> trackNames, List<String> artistNames) throws JsonProcessingException {
         if (trackNames.size() != artistNames.size()) {
             throw new IllegalArgumentException("Track names and artist names must have the same size.");}
         String ids = "";
         for (int i = 0; i < trackNames.size(); i++) {
             String name = trackNames.get(i);
             String artist = artistNames.get(i);
-            JsonNode trackJson = searchTrack(name, artist);
+            JsonNode trackJson = searchTrackAtSpotify(name, artist);
             String id = trackJson.path("id").asText();
             if (!id.isEmpty()) {
                 ids += id + ",";
@@ -44,25 +56,29 @@ public class SpotifyTrackService {
         return getTracks(ids);
     }
 
-    public JsonNode searchTrack(String name, String artist) {
+    private JsonNode searchTrackAtSpotify(String name, String artist) {
         String query = String.format("track:%s artist:%s", name, artist);
-        System.out.println("Encoded Query: " + query);
         JsonNode response = trackSpotifyClient.searchTrack("Bearer " + getToken(), query, "track");
-        System.out.println("response = " + response);
 
         JsonNode jsonsNode = response.path("tracks");
-
         ObjectNode arrayNode = objectMapper.createObjectNode();
-
         String id = jsonsNode.path("items").get(0).path("id").asText();
 
         return arrayNode.put("id", id);
 
     }
 
-    public List<CreateTrackRequest> getTracks(String ids) throws JsonProcessingException {
+    private List<CreateTrackRequest> getTracks(String ids) throws JsonProcessingException {
         JsonNode response = trackSpotifyClient.getTracks("Bearer " + getToken(), ids);
-        System.out.println("response = " + response);
+        ArrayNode resultArrayNode = getJsonNodes(response);
+
+        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>() {});
+
+    }
+
+
+
+    private ArrayNode getJsonNodes(JsonNode response) {
         JsonNode tracksNode = response.path("tracks");
 
         ArrayNode resultArrayNode = objectMapper.createArrayNode();
@@ -80,9 +96,7 @@ public class SpotifyTrackService {
 
             resultArrayNode.add(objectNode);
         }
-
-        return objectMapper.readValue(resultArrayNode.toString(), new TypeReference<>() {});
-
+        return resultArrayNode;
     }
 
     private String getToken() {

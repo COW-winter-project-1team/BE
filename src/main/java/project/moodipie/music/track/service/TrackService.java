@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
+import project.moodipie.music.track.controller.dto.response.TrackResponse;
 import project.moodipie.music.track.entity.Track;
 import project.moodipie.music.track.repository.TrackRepository;
 
@@ -21,5 +22,10 @@ public class TrackService {
             Track track = trackRequest.toEntity();
             trackRepository.save(track);
         }
+    }
+
+    public TrackResponse getTrack(String id) {
+        Track track = trackRepository.getReferenceById(id);
+        return TrackResponse.from(track);
     }
 }

@@ -24,10 +24,13 @@ public class PlaylistTrack {
     @JoinColumn(name = "track_id")
     private Track track;
 
+    private Long playlistTrackId;
 
     @Builder
-    public PlaylistTrack(Playlist playlist, Track track) {
+    public PlaylistTrack(Playlist playlist, Track track, Long playlistTrackId) {
         this.playlist = playlist;
         this.track = track;
+        this.playlistTrackId = playlistTrackId;
     }
+
 }

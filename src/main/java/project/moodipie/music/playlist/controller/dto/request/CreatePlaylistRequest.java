@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 public class CreatePlaylistRequest {
-    @Schema(description = "유저 정보", example = "")
+    @Schema(description = "유저 정보", example = "1")
     private Long userId;
     @Schema(description = "플레이리스트 제목", example = "우울할때 듣는 음악")
     private String title;

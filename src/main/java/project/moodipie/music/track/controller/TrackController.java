@@ -24,13 +24,16 @@ public class TrackController {
     @Operation(summary = "음악저장", description = "가져온 음악을 저장합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "저장 성공"),
-            @ApiResponse(responseCode = "400", description = "저장 실패")
     })
     @PostMapping("/save")
     public void createTracks(@RequestBody List<CreateTrackRequest> createTrackRequest) {
         trackService.save(createTrackRequest);
     }
 
+    @Operation(summary = "음악조회", description = "가져온 음악을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "저장 성공"),
+    })
     @GetMapping("/{id}")
     public TrackResponse getTrack(@PathVariable String id) {
        return trackService.getTrack(id);

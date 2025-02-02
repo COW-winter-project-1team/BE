@@ -11,6 +11,7 @@ import java.util.List;
 
 @Getter
 public class PlaylistResponse {
+    @Schema(description = "플레이 리스트 id", example = "1")
     private Long id;
     @Schema(description = "제목", example = "http://dfdfjiweoif.com")
     private String title;

@@ -1,5 +1,8 @@
 package project.moodipie.home;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +23,10 @@ public class homeController {
     private final PlaylistService playlistService;
     private final HttpSession session;
 
-
+    @Operation(summary = "홈에서 플레이리스트 조회", description = "홈 화면에서 플레이리스트를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "저장 성공"),
+    })
     @GetMapping("/home")
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist() {
         SessionUser currentUser = getSessionUser();
@@ -28,6 +34,10 @@ public class homeController {
         return ResponseEntity.ok(allPlaylist);
     }
 
+    @Operation(summary = "플레이리스트 삭제", description = "홈 화면에서 플레이리스트를 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "저장 성공"),
+    })
     @DeleteMapping("/home")
     public void deletePlaylist(@RequestBody List<Long> ids) {
         playlistService.deletePlaylist(ids);

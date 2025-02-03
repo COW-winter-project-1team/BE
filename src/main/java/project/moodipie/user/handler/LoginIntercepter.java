@@ -1,4 +1,4 @@
-package project.moodipie.handler;
+package project.moodipie.user.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package project.moodipie.dto;
+package project.moodipie.user.controller.dto;
 
 import lombok.Getter;
 

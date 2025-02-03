@@ -1,8 +1,8 @@
-package project.moodipie.repository;
+package project.moodipie.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import project.moodipie.entity.User;
+import project.moodipie.user.entity.User;
 
 
 @Repository

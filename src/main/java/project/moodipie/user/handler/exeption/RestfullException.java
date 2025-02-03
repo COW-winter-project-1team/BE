@@ -1,4 +1,4 @@
-package project.moodipie.handler.exeption;
+package project.moodipie.user.handler.exeption;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

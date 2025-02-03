@@ -3,7 +3,7 @@ package project.moodipie.music.playlist.controller.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import project.moodipie.entity.Emotion;
+import project.moodipie.Emotion;
 
 import java.util.Date;
 

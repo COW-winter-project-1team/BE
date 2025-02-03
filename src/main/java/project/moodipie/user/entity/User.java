@@ -1,4 +1,4 @@
-package project.moodipie.entity;
+package project.moodipie.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;

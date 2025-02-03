@@ -1,4 +1,4 @@
-package project.moodipie.entity;
+package project.moodipie;
 
 public enum Emotion {
     HAPPY,

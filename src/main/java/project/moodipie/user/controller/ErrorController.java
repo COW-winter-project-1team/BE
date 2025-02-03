@@ -1,4 +1,4 @@
-package project.moodipie.controller;
+package project.moodipie.user.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

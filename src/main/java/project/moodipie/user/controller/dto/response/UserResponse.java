@@ -1,4 +1,4 @@
-package project.moodipie.dto.response;
+package project.moodipie.user.controller.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

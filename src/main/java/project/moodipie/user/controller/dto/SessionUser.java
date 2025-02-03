@@ -1,7 +1,7 @@
-package project.moodipie.dto;
+package project.moodipie.user.controller.dto;
 
 import lombok.Getter;
-import project.moodipie.entity.User;
+import project.moodipie.user.entity.User;
 
 @Getter
 public class SessionUser {

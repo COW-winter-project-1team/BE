@@ -1,4 +1,4 @@
-package project.moodipie.controller;
+package project.moodipie.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.moodipie.dto.response.HelpResponse;
+import project.moodipie.user.controller.dto.response.HelpResponse;
 
 @RestController
 @RequestMapping("/help")

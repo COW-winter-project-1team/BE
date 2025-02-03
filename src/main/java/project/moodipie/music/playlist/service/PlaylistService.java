@@ -37,7 +37,7 @@ public class PlaylistService {
         playlistRepository.save(playlist);
         List<Track> tracks = trackRepository.findAllById(request.getTrackIds());
         List<PlaylistTrack> playlistTracks = new ArrayList<>();
-        Long playlistTrackId = 0L;
+        long playlistTrackId = 0L;
         for (Track track : tracks) {
             PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, ++playlistTrackId);
             playlistTracks.add(playlistTrack);
@@ -46,8 +46,9 @@ public class PlaylistService {
         playlistTrackRepository.saveAll(playlistTracks);
     }
 
+    @Transactional(readOnly = true)
     public List<PlaylistResponse> findAllPlaylist(Long id) {
-        return playlistRepository.findByUserId(id).stream().map(playlist -> PlaylistResponse.from(playlist)).collect(Collectors.toList());
+        return playlistRepository.findByUserId(id).stream().map(PlaylistResponse::from).collect(Collectors.toList());
     }
 
     public void deletePlaylist(List<Long> ids) {

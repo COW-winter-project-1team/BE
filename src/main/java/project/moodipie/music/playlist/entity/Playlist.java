@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.moodipie.entity.Emotion;
-import project.moodipie.entity.User;
+import project.moodipie.Emotion;
+import project.moodipie.user.entity.User;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 
 import java.util.ArrayList;

@@ -3,7 +3,7 @@ package project.moodipie.music.playlist.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.entity.User;
+import project.moodipie.user.entity.User;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackResponse;
@@ -15,7 +15,7 @@ import project.moodipie.music.playlist.repository.PlaylistRepository;
 import project.moodipie.music.track.controller.dto.response.TrackResponse;
 import project.moodipie.music.track.entity.Track;
 import project.moodipie.music.track.repository.TrackRepository;
-import project.moodipie.repository.UserRepository;
+import project.moodipie.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

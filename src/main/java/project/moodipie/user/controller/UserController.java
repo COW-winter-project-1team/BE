@@ -1,7 +1,6 @@
 package project.moodipie.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import project.moodipie.user.controller.dto.CreateUserRequest;
-import project.moodipie.user.controller.dto.LoginDto;
+import project.moodipie.user.controller.dto.request.CreateUserRequest;
+import project.moodipie.user.controller.dto.request.LoginRequest;
 import project.moodipie.user.controller.dto.SessionUser;
-import project.moodipie.user.controller.dto.UpdateUserRequest;
+import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.response.SignUpResponse;
 import project.moodipie.user.controller.dto.response.UserResponse;
 import project.moodipie.user.entity.User;
@@ -44,9 +43,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
     @PutMapping("/users")//회원정보 수정
-    public void updateUser(@RequestBody
-                               @Schema(description = "수정할 회원의 정보", example = "[name, ProfileImage]")
-                               UpdateUserRequest updateUserRequest) {
+    public void updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
         SessionUser currentUser = getSessionUser();
         userService.updateUser(currentUser.getEmail(), updateUserRequest);
         User updateduser = userService.findUserByEmail(currentUser.getEmail());
@@ -68,9 +65,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),
     })
     @PostMapping("/signup")//회원가입 기능
-    public SignUpResponse signup(@RequestBody
-                                     @Schema(description = "가입할 회원의 정보", example = "[email, name, password]")
-                                     CreateUserRequest createUserRequest) {
+    public SignUpResponse signup(@RequestBody CreateUserRequest createUserRequest) {
         return userService.signup(createUserRequest);
     }
 
@@ -79,10 +74,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
     @PostMapping("/login")//로그인
-    public void login(@RequestBody
-                          @Schema(description = "로그인할 회원의 정보", example = "[email, password]")
-                          LoginDto loginDto) {
-        User loginuser = userService.login(loginDto);
+    public void login(@RequestBody LoginRequest loginRequest) {
+        User loginuser = userService.login(loginRequest);
         SessionUser currentUser = new SessionUser(loginuser);
         if (loginuser.isFirstLogin()) {//첫 로그인일 때
             session.setAttribute("currentUser", currentUser);

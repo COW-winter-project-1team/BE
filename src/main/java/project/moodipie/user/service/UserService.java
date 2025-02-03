@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.user.controller.dto.CreateUserRequest;
-import project.moodipie.user.controller.dto.LoginDto;
-import project.moodipie.user.controller.dto.UpdateUserRequest;
+import project.moodipie.user.controller.dto.request.CreateUserRequest;
+import project.moodipie.user.controller.dto.request.LoginRequest;
+import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.response.SignUpResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
@@ -57,14 +57,14 @@ public class UserService {
     }
 
     @Transactional
-    public User login(LoginDto loginDto) {
-        User currentuser = userRepository.findByEmail(loginDto.getEmail());
+    public User login(LoginRequest loginRequest) {
+        User currentuser = userRepository.findByEmail(loginRequest.getEmail());
         if (currentuser == null) {
             System.out.println("not found user");
             throw new RestfullException("NOT_FOUND_ID", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (!loginDto.getPassword().equals(currentuser.getPassword())) {
-            System.out.println(loginDto.getPassword()+" : "+ currentuser.getPassword());
+        if (!loginRequest.getPassword().equals(currentuser.getPassword())) {
+            System.out.println(loginRequest.getPassword()+" : "+ currentuser.getPassword());
             throw new RestfullException("WRONG_PASSWORD", HttpStatus.BAD_REQUEST);
         }
         return currentuser;

@@ -51,8 +51,8 @@ public class PlaylistService {
         return playlistRepository.findByUserId(id).stream().map(PlaylistResponse::from).collect(Collectors.toList());
     }
 
-    public void deletePlaylist(List<Long> ids) {
-        playlistRepository.deleteAllById(ids);
+    public void deletePlaylist(Long playlistID) {
+        playlistRepository.deleteById(playlistID);
     }
 
     public PlaylistTrackResponse findPlaylistById(Long id) {

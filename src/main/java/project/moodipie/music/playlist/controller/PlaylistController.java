@@ -68,7 +68,7 @@ public class PlaylistController {
 
     @Operation(summary = "홈에서 플레이리스트 조회", description = "홈 화면에서 플레이리스트를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "저장 성공"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
     })
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist() {

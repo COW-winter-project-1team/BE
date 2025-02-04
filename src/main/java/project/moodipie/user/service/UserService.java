@@ -2,15 +2,16 @@ package project.moodipie.user.service;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.moodipie.user.controller.dto.SessionUser;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.LoginRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.response.SignUpResponse;
+import project.moodipie.user.controller.dto.response.UserResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
 import project.moodipie.user.repository.UserRepository;
@@ -70,5 +71,8 @@ public class UserService {
     }
 
 
-
+    public UserResponse getUserInfo(SessionUser currentUser) {
+        User user = userRepository.getReferenceByName(currentUser.getUsername());
+        return UserResponse.from(user);
+    }
 }

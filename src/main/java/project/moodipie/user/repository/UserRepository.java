@@ -9,4 +9,6 @@ import project.moodipie.user.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
     void deleteByEmail(String email);
+
+    User getReferenceByName(String username);
 }

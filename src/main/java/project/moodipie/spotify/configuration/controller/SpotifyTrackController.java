@@ -12,10 +12,7 @@ import project.moodipie.music.track.service.TrackService;
 import project.moodipie.spotify.configuration.controller.dto.request.SpotifyTrackRequest;
 import project.moodipie.spotify.configuration.service.SpotifyTrackService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/spotify/api")

@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.moodipie.entity.User;
 import project.moodipie.music.track.entity.Track;
+import project.moodipie.user.entity.User;
 
 @Getter
 @Entity
@@ -27,14 +27,15 @@ public class PlaylistTrack {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     private Long playlistTrackId;
 
     @Builder
-    public PlaylistTrack(Playlist playlist, Track track, Long playlistTrackId) {
+    public PlaylistTrack(Playlist playlist, Track track, User user , Long playlistTrackId) {
         this.playlist = playlist;
         this.track = track;
+        this.user = user;
         this.playlistTrackId = playlistTrackId;
     }
 

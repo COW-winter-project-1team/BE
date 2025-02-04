@@ -30,9 +30,9 @@ public class UserController {
 
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "저장 성공"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
     })
-    @GetMapping("/users")//마이페이지
+    @GetMapping("/users")
     public UserResponse userPage() {
         SessionUser currentUser = getSessionUser();
         UserResponse response = new UserResponse(currentUser.getUsername(), currentUser.getPicture());
@@ -42,7 +42,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
-    @PutMapping("/users")//회원정보 수정
+    @PutMapping("/users")
     public void updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
         SessionUser currentUser = getSessionUser();
         userService.updateUser(currentUser.getEmail(), updateUserRequest);
@@ -53,7 +53,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "탈퇴 성공"),
     })
-    @DeleteMapping("/users")//회원탈퇴
+    @DeleteMapping("/users")
     public void deleteUser() {
         SessionUser currentUser = getSessionUser();
         userService.deleteUserByEmail(currentUser.getEmail());
@@ -64,7 +64,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),
     })
-    @PostMapping("/signup")//회원가입 기능
+    @PostMapping("/signup")
     public SignUpResponse signup(@RequestBody CreateUserRequest createUserRequest) {
         return userService.signup(createUserRequest);
     }
@@ -73,7 +73,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
-    @PostMapping("/login")//로그인
+    @PostMapping("/login")
     public void login(@RequestBody LoginRequest loginRequest) {
         User loginuser = userService.login(loginRequest);
         SessionUser currentUser = new SessionUser(loginuser);
@@ -82,7 +82,7 @@ public class UserController {
             loginuser.setFirstLogin(false);
             userRepository.save(loginuser);
         } else {
-            session.setAttribute("currentUser", currentUser);// 기존 로그인일 때
+            session.setAttribute("currentUser", currentUser);
         }
     }
 
@@ -90,7 +90,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     })
-    @PostMapping("/logout")//로그아웃
+    @PostMapping("/logout")
     public void logout() {
         session.invalidate();
     }

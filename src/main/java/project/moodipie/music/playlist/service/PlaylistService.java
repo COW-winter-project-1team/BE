@@ -39,7 +39,7 @@ public class PlaylistService {
         List<PlaylistTrack> playlistTracks = new ArrayList<>();
         long playlistTrackId = 0L;
         for (Track track : tracks) {
-            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, ++playlistTrackId);
+            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, user,++playlistTrackId);
             playlistTracks.add(playlistTrack);
         }
 
@@ -51,8 +51,8 @@ public class PlaylistService {
         return playlistRepository.findByUserId(id).stream().map(PlaylistResponse::from).collect(Collectors.toList());
     }
 
-    public void deletePlaylist(List<Long> ids) {
-        playlistRepository.deleteAllById(ids);
+    public void deletePlaylist(Long playlistID) {
+        playlistRepository.deleteById(playlistID);
     }
 
     public PlaylistTrackResponse findPlaylistById(Long id) {

@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.moodipie.user.controller.dto.SessionUser;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
-import project.moodipie.user.controller.dto.request.LoginRequest;
+import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.response.SignUpResponse;
+import project.moodipie.user.controller.dto.response.UserLoginResponse;
 import project.moodipie.user.controller.dto.response.UserResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
@@ -57,22 +58,25 @@ public class UserService {
     }
 
     @Transactional
-    public User login(LoginRequest loginRequest) {
-        User currentuser = userRepository.findByEmail(loginRequest.getEmail());
+    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
+        User currentuser = userRepository.findByEmail(userLoginRequest.getEmail());
         if (currentuser == null) {
-            System.out.println("not found user");
-            throw new RestfullException("NOT_FOUND_ID", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new UserLoginResponse("NOT_FOUND_ID");
         }
-        if (!loginRequest.getPassword().equals(currentuser.getPassword())) {
-            System.out.println(loginRequest.getPassword()+" : "+ currentuser.getPassword());
-            throw new RestfullException("WRONG_PASSWORD", HttpStatus.BAD_REQUEST);
+        if (currentuser.getPassword().equals(userLoginRequest.getPassword())) {
+            return new UserLoginResponse("LOGIN_SUCCESS");
         }
-        return currentuser;
+        return new UserLoginResponse("WRONG_PASSWORD");
     }
+
 
 
     public UserResponse getUserInfo(SessionUser currentUser) {
         User user = userRepository.getReferenceByName(currentUser.getUsername());
         return UserResponse.from(user);
+    }
+
+    public void save(User currentUser) {
+        userRepository.save(currentUser);
     }
 }

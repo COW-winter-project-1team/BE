@@ -35,8 +35,7 @@ public class UserController {
     @GetMapping("/users")
     public UserResponse userPage() {
         SessionUser currentUser = getSessionUser();
-        UserResponse response = new UserResponse(currentUser.getUsername(), currentUser.getPicture());
-        return response;
+        return userService.getUserInfo(currentUser);
     }
     @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
     @ApiResponses({
@@ -77,7 +76,7 @@ public class UserController {
     public void login(@RequestBody LoginRequest loginRequest) {
         User loginuser = userService.login(loginRequest);
         SessionUser currentUser = new SessionUser(loginuser);
-        if (loginuser.isFirstLogin()) {//첫 로그인일 때
+        if (loginuser.isFirstLogin()) {
             session.setAttribute("currentUser", currentUser);
             loginuser.setFirstLogin(false);
             userRepository.save(loginuser);

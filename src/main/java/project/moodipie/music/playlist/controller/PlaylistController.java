@@ -79,7 +79,7 @@ public class PlaylistController {
 
     @Operation(summary = "플레이리스트 삭제", description = "홈 화면에서 플레이리스트를 삭제합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "저장 성공"),
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
     })
     @DeleteMapping("/{playlistId}")
     public void deletePlaylist(@PathVariable("playlistId") Long playlistId) {

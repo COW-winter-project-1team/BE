@@ -39,7 +39,7 @@ public class PlaylistService {
         List<PlaylistTrack> playlistTracks = new ArrayList<>();
         long playlistTrackId = 0L;
         for (Track track : tracks) {
-            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, ++playlistTrackId);
+            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, user,++playlistTrackId);
             playlistTracks.add(playlistTrack);
         }
 

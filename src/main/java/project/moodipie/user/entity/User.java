@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.moodipie.music.playlist.entity.Playlist;
+import project.moodipie.music.playlist.entity.PlaylistTrack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
     private List<Playlist> playlists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PlaylistTrack> playlistTracks = new ArrayList<>();
 
     @Builder
     private User(String name, String email, String password) {

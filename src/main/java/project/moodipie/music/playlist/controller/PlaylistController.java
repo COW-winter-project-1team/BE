@@ -62,7 +62,7 @@ public class PlaylistController {
     })
     @DeleteMapping("/{playlistId}/tracks/{trackId}")
     public void deletePlaylistTrack(@PathVariable("playlistId") Long playlistId,
-                                    @PathVariable("trackId") Long trackId) {//고치기
+                                    @PathVariable("trackId") Long trackId) {
         playlistService.deletePlaylistTrack(playlistId, trackId);
     }
 

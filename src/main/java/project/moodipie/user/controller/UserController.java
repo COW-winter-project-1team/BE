@@ -30,7 +30,7 @@ public class UserController {
 
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "저장 성공"),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
     })
     @GetMapping("/users")//마이페이지
     public UserResponse userPage() {

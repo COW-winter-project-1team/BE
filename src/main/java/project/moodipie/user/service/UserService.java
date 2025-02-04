@@ -20,11 +20,10 @@ import project.moodipie.user.repository.UserRepository;
 @Component
 @Transactional
 public class UserService {
-    @Autowired
     private final UserRepository userRepository;
 
     public SignUpResponse signup(CreateUserRequest createUserRequest) {
-        User newuser = (User) createUserRequest.toEntity();
+        User newuser = createUserRequest.toEntity();
         User existingUser = userRepository.findByEmail(createUserRequest.getEmail());
         if (existingUser != null) {
             return SignUpResponse.builder()

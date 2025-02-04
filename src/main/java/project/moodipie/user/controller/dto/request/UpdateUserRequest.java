@@ -8,5 +8,5 @@ public class UpdateUserRequest {
     @Schema(description = "수정된 이름", example = "둘리")
     public String name;
     @Schema(description = "프로필 사진", example = "12388")
-    public Integer ProfilePicture;
+    public Integer profilePicture;
 }

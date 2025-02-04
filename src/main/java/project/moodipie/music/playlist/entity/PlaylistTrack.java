@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.moodipie.entity.User;
 import project.moodipie.music.track.entity.Track;
+import project.moodipie.user.entity.User;
 
 @Getter
 @Entity

@@ -55,8 +55,8 @@ public class PlaylistService {
         playlistRepository.deleteById(playlistID);
     }
 
-    public PlaylistTrackResponse findPlaylistById(Long id) {
-        PlaylistResponse playlist = PlaylistResponse.from(playlistRepository.getReferenceById(id));
+    public PlaylistTrackResponse findPlaylistById(Long playlistId) {
+        PlaylistResponse playlist = PlaylistResponse.from(playlistRepository.getReferenceById(playlistId));
         List<TrackResponse> tracks = playlistTrackRepository.getReferenceByPlaylistId(playlist.getId())
                 .stream()
                 .map(playlistTrack -> TrackResponse.from(playlistTrack.getTrack()))
@@ -65,8 +65,8 @@ public class PlaylistService {
         return PlaylistTrackResponse.from(playlist, tracks);
     }
 
-    public void updatePlaylist(Long id, UpdatePlaylistRequest updatePlaylistRequest) {
-        Playlist playlist = playlistRepository.getReferenceById(id);
+    public void updatePlaylist(Long playlistId, UpdatePlaylistRequest updatePlaylistRequest) {
+        Playlist playlist = playlistRepository.getReferenceById(playlistId);
         playlist.update(updatePlaylistRequest);
     }
 

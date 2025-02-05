@@ -26,6 +26,7 @@ public class Playlist {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private Long playlistNumber;
     private String title;
     private String playlistImage;
     private Date timestamp;
@@ -37,7 +38,8 @@ public class Playlist {
 
 
     @Builder
-    public Playlist(final User user, final String title, final String playlistImage, final Date timestamp, final Emotion emotion) {
+    public Playlist(Long playlistNumber,final User user, final String title, final String playlistImage, final Date timestamp, final Emotion emotion) {
+        this.playlistNumber = playlistNumber;
         this.user = user;
         this.title = title;
         this.playlistImage = playlistImage;

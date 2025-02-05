@@ -19,6 +19,7 @@ import project.moodipie.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,8 @@ public class PlaylistService {
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
-        Playlist playlist = request.toEntity(user);
+        Long playlistNumber = getNextPlaylistNumber(user.getId());
+        Playlist playlist = request.toEntity(user,playlistNumber);
         playlistRepository.save(playlist);
         List<Track> tracks = trackRepository.findAllById(request.getTrackIds());
         List<PlaylistTrack> playlistTracks = new ArrayList<>();
@@ -52,13 +54,15 @@ public class PlaylistService {
         return playlistRepository.findByUserId(userId).stream().map(PlaylistResponse::from).collect(Collectors.toList());
     }
 
-    public void deletePlaylist(Long playlistID) {
-        playlistRepository.deleteById(playlistID);
+    public void deletePlaylist(String userEmail, Long playlistNumber) {
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        playlistRepository.deleteByUserIdAndPlaylistNumber(user.orElseThrow().getId(), playlistNumber);
     }
 
-    public PlaylistTrackResponse findPlaylistById(Long playlistId) {
-        PlaylistResponse playlist = PlaylistResponse.from(playlistRepository.getReferenceById(playlistId));
-        List<TrackResponse> tracks = playlistTrackRepository.getReferenceByPlaylistId(playlist.getId())
+    public PlaylistTrackResponse findPlaylistByUserIdAndPlaylistNumber(String userEmail, Long playlistNumber) {
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        PlaylistResponse playlist = PlaylistResponse.from(playlistRepository.getReferenceByUserIdAndPlaylistNumber(user.orElseThrow().getId(), playlistNumber));
+        List<TrackResponse> tracks = playlistTrackRepository.findByPlaylistId(playlist.getPlaylistNumber())
                 .stream()
                 .map(playlistTrack -> TrackResponse.from(playlistTrack.getTrack()))
                 .collect(Collectors.toList());
@@ -66,18 +70,24 @@ public class PlaylistService {
         return PlaylistTrackResponse.from(playlist, tracks);
     }
 
-    public void updatePlaylist(Long playlistId, UpdatePlaylistRequest updatePlaylistRequest) {
-        Playlist playlist = playlistRepository.getReferenceById(playlistId);
+    public void updatePlaylist(String userEmail, Long playlistNumber, UpdatePlaylistRequest updatePlaylistRequest) {
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        Playlist playlist = playlistRepository.getReferenceByUserIdAndPlaylistNumber(user.orElseThrow().getId(), playlistNumber);
         playlist.update(updatePlaylistRequest);
     }
 
-    public void deletePlaylistTrack(Long playlistId, Long trackId) {
-        List<PlaylistTrack> playlistTracks = playlistTrackRepository.getReferenceByPlaylistId(playlistId);
+    public void deletePlaylistTrack(String userEmail, Long playlistNumber, Long trackId) {
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        List<PlaylistTrack> playlistTracks = playlistTrackRepository.findByPlaylistUserIdAndPlaylistPlaylistNumber(user.orElseThrow().getId(), playlistNumber);
         for (PlaylistTrack playlistTrack : playlistTracks) {
-            if (playlistTrack.getPlaylistTrackId().equals(trackId)) {
-                playlistTrackRepository.deleteByPlaylistTrackIdAndPlaylistId(trackId,playlistId);
-            }
+            if (playlistTrack.getPlaylistTrackId().equals(trackId))
+                playlistTrackRepository.deleteByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(trackId, playlistNumber, user.orElseThrow().getId());
         }
 
     }
+    private Long getNextPlaylistNumber(Long userId) {
+        Long playlistCount = playlistRepository.countByUserId(userId);
+        return playlistCount + 1;
+    }
+
 }

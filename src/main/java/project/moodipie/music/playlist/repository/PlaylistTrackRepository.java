@@ -8,9 +8,12 @@ import java.util.List;
 
 @Repository
 public interface PlaylistTrackRepository extends JpaRepository<PlaylistTrack, Long> {
-    void deleteByPlaylistTrackIdAndPlaylistId(Long playlistTrackId, Long playlist_id);
 
-    List<PlaylistTrack> getReferenceByPlaylistId(Long playlistId);
+    List<PlaylistTrack> findByPlaylistId(Long playlistId);
 
+
+    List<PlaylistTrack> findByPlaylistUserIdAndPlaylistPlaylistNumber(Long userId, Long playlistNumber);
+
+    void deleteByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(Long playlistTrackId, Long playlistNumber, Long userId);
 
 }

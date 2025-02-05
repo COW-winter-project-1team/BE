@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.moodipie.config.JWTUtil;
 import project.moodipie.music.playlist.controller.dto.request.CreatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
@@ -17,6 +19,7 @@ import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackResp
 import project.moodipie.music.playlist.service.PlaylistService;
 import project.moodipie.user.controller.dto.SessionUser;
 import project.moodipie.user.handler.exeption.RestfullException;
+import project.moodipie.user.service.UserService;
 
 import java.util.List;
 
@@ -28,14 +31,18 @@ public class PlaylistController {
 
     private final PlaylistService playlistService;
     private final HttpSession session;
+    private final JWTUtil jwtUtil;
+    private final UserService userService;
 
     @Operation(summary = "플레이리스트 생성", description = "새로운 플레이리스트를 생성합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "생성 성공"),
     })
     @PostMapping
-    public void savePlaylist(@RequestBody CreatePlaylistRequest request) {
-        playlistService.savePlaylist(request);
+    public void savePlaylist(
+            @AuthenticationPrincipal String userEmail,
+            @RequestBody CreatePlaylistRequest request) {
+        playlistService.savePlaylist(userEmail, request);
     }
 
     @Operation(summary = "플레이리스트 정보 조회", description = "생성된 플레이리스트를 조회합니다.")
@@ -53,7 +60,8 @@ public class PlaylistController {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
     @PutMapping("/{playlistId}")
-    public void updatePlaylist(@PathVariable("playlistId") Long playlistId,
+    public void updatePlaylist(
+            @PathVariable("playlistId") Long playlistId,
                                @RequestBody UpdatePlaylistRequest updatePlaylistRequest) {
         playlistService.updatePlaylist(playlistId, updatePlaylistRequest);
     }
@@ -76,9 +84,10 @@ public class PlaylistController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
     })
     @GetMapping
-    public ResponseEntity<List<PlaylistResponse>> findAllPlaylist() {
-        SessionUser currentUser = getSessionUser();
-        List<PlaylistResponse> allPlaylist = playlistService.findAllPlaylist(currentUser.getId());
+    public ResponseEntity<List<PlaylistResponse>> findAllPlaylist(@AuthenticationPrincipal String userEmail) {
+        Long userId = userService.findUserByEmail(userEmail).getId();
+        List<PlaylistResponse> allPlaylist = playlistService.findAllPlaylistByUserId(userId);
+        System.out.println(allPlaylist);
         return ResponseEntity.ok(allPlaylist);
     }
 

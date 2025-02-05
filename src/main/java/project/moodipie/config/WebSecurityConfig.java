@@ -1,11 +1,9 @@
 package project.moodipie.config;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,7 +33,8 @@ public class WebSecurityConfig {
                     requests.requestMatchers("/login", "/signup","/logout").permitAll();
                     requests.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll();
                     requests.requestMatchers("/users","/token").authenticated();
-                    requests.requestMatchers("/api/**").authenticated();
+                    requests.requestMatchers("/playlists/**","/tracks/**").authenticated();
+                    requests.requestMatchers("/spotify/api/tracks").permitAll();
 
                 })
                 .sessionManagement(

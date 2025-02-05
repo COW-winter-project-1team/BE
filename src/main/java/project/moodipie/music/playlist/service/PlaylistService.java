@@ -28,10 +28,11 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final TrackRepository trackRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
-    private final UserRepository userJpaRepository;
+    private final UserRepository userRepository;
 
-    public void savePlaylist(CreatePlaylistRequest request) {
-        User user = userJpaRepository.findById(request.getUserId())
+    public void savePlaylist(String userEmail, CreatePlaylistRequest request) {
+
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         Playlist playlist = request.toEntity(user);
         playlistRepository.save(playlist);
@@ -47,8 +48,8 @@ public class PlaylistService {
     }
 
     @Transactional(readOnly = true)
-    public List<PlaylistResponse> findAllPlaylist(Long id) {
-        return playlistRepository.findByUserId(id).stream().map(PlaylistResponse::from).collect(Collectors.toList());
+    public List<PlaylistResponse> findAllPlaylistByUserId(Long userId) {
+        return playlistRepository.findByUserId(userId).stream().map(PlaylistResponse::from).collect(Collectors.toList());
     }
 
     public void deletePlaylist(Long playlistID) {

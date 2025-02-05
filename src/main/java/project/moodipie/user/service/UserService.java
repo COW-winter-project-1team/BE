@@ -30,7 +30,7 @@ public class UserService {
 
     public UserServiceResponse signup(CreateUserRequest createUserRequest) {
         User newuser = createUserRequest.toEntity();
-        User existingUser = userRepository.findByEmail(createUserRequest.getEmail());
+        User existingUser = userRepository.findByEmail(createUserRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         if (existingUser != null) {
             return UserServiceResponse.builder()
                     .message("해당하는 이메일이 존재합니다.")
@@ -52,15 +52,15 @@ public class UserService {
                 .build();
     }
 
-    public UserServiceResponse deleteUserByEmail(String email) {
-        userRepository.deleteByEmail(email);
+    public UserServiceResponse deleteUserByEmail(String userEmail) {
+        userRepository.deleteByEmail(userEmail);
         return UserServiceResponse.builder()
                 .message("회원 탈퇴가 완료되었습니다.")
                 .build();
     }
 
-    public User findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email);
+    public User findUserByEmail(String userEmail) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         if (user == null) {
             throw new RestfullException("회원을 찾을 수 없습니다.",HttpStatus.BAD_REQUEST);
         }
@@ -69,7 +69,7 @@ public class UserService {
 
     @Transactional
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
-        User currentuser = userRepository.findByEmail(userLoginRequest.getEmail());
+        User currentuser = userRepository.findByEmail(userLoginRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         if (currentuser == null) {
             return new UserLoginResponse("회원을 찾을 수 없습니다.", null);
         }
@@ -86,7 +86,7 @@ public class UserService {
     }
 
     public UserInfoResponse getUserInfo(String userEmail) {
-        User user = userRepository.findByEmail(userEmail);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
         return UserInfoResponse.from(user);
     }
 }

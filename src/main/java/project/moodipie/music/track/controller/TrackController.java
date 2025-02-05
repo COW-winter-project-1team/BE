@@ -26,7 +26,8 @@ public class TrackController {
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
     @PostMapping
-    public void createTracks(@RequestBody List<CreateTrackRequest> createTrackRequest) {
+    public void createTracks(
+            @RequestBody List<CreateTrackRequest> createTrackRequest) {
         trackService.save(createTrackRequest);
     }
 

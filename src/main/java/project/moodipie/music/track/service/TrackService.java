@@ -24,8 +24,8 @@ public class TrackService {
         }
     }
 
-    public TrackResponse getTrack(String id) {
-        Track track = trackRepository.getReferenceById(id);
+    public TrackResponse getTrack(String trackId) {
+        Track track = trackRepository.getReferenceById(trackId);
         return TrackResponse.from(track);
     }
 }

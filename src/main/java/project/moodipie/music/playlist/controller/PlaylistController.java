@@ -1,6 +1,7 @@
 package project.moodipie.music.playlist.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,19 +42,20 @@ public class PlaylistController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
     })
-    @GetMapping("/{id}")
-    public PlaylistTrackResponse playlistResponse(@PathVariable("id") Long id) {
-        return playlistService.findPlaylistById(id);
+    @GetMapping("/{playlistId}")
+    public PlaylistTrackResponse playlistResponse(@Parameter(description = "플레이리스트 정보 얻기 윈한 플레이리스트 아이디", required = true)
+                                                  @PathVariable("playlistId") Long playlistId) {
+        return playlistService.findPlaylistById(playlistId);
     }
 
     @Operation(summary = "플레이리스트 정보 수정", description = "생성된 플레이리스트를 수정합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
-    @PutMapping("/{id}")
-    public void updatePlaylist(@PathVariable("id") Long id,
+    @PutMapping("/{playlistId}")
+    public void updatePlaylist(@PathVariable("playlistId") Long playlistId,
                                @RequestBody UpdatePlaylistRequest updatePlaylistRequest) {
-        playlistService.updatePlaylist(id, updatePlaylistRequest);
+        playlistService.updatePlaylist(playlistId, updatePlaylistRequest);
     }
 
     @Operation(summary = "플레이리스트 내부 트랙 삭제", description = "플레이리스트 내부의 트랙을 삭제 합니다.")
@@ -61,8 +63,11 @@ public class PlaylistController {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
     })
     @DeleteMapping("/{playlistId}/tracks/{trackId}")
-    public void deletePlaylistTrack(@PathVariable("playlistId") Long playlistId,
-                                    @PathVariable("trackId") Long trackId) {
+    public void deletePlaylistTrack(
+            @Parameter(description = "선택할 플레이리스트 아이디", required = true)
+            @PathVariable("playlistId") Long playlistId,
+            @Parameter(description = "삭제할 트랙 번호", required = true)
+            @PathVariable("trackId") Long trackId) {
         playlistService.deletePlaylistTrack(playlistId, trackId);
     }
 
@@ -82,7 +87,9 @@ public class PlaylistController {
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
     })
     @DeleteMapping("/{playlistId}")
-    public void deletePlaylist(@PathVariable("playlistId") Long playlistId) {
+    public void deletePlaylist(
+            @Parameter(description = "삭제할 플레이리스트 아이디", required = true)
+            @PathVariable("playlistId") Long playlistId) {
         playlistService.deletePlaylist(playlistId);
     }
 

@@ -27,7 +27,7 @@ public class SpotifyTrackController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
-    @PostMapping("tracks/save")
+    @PostMapping("tracks")
     public void saveTracks(@RequestBody List<SpotifyTrackRequest> request) throws JsonProcessingException {
         List<CreateTrackRequest> tracks = spotifyTrackService.createTrackRequests(request);
         trackService.save(tracks);

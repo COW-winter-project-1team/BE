@@ -1,6 +1,7 @@
 package project.moodipie.music.track.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +13,7 @@ import project.moodipie.music.track.service.TrackService;
 
 import java.util.List;
 
-@Tag(name="음악 CRUD", description = "스포티파이에서 가져온 음악정보")
+@Tag(name = "음악 CRUD", description = "스포티파이에서 가져온 음악정보")
 @RestController
 @RequestMapping("/tracks")
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class TrackController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
-    @PostMapping("/save")
+    @PostMapping
     public void createTracks(@RequestBody List<CreateTrackRequest> createTrackRequest) {
         trackService.save(createTrackRequest);
     }
@@ -33,8 +34,9 @@ public class TrackController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
-    @GetMapping("/{id}")
-    public TrackResponse getTrack(@PathVariable String id) {
-       return trackService.getTrack(id);
+    @GetMapping("/{trackId}")
+    public TrackResponse getTrack(@Parameter(description = "트랙 정보 얻기 위한 트랙 아이디", required = true)
+                                  @PathVariable String trackId) {
+        return trackService.getTrack(trackId);
     }
 }

@@ -6,7 +6,6 @@ import lombok.Setter;
 import project.moodipie.user.entity.User;
 
 @Getter
-@Setter
 public class CreateUserRequest {
     @Schema(description = "이름", example = "홍길동")
     private String username;

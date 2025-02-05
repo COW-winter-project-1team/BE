@@ -2,17 +2,18 @@ package project.moodipie.user.service;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.user.controller.dto.SessionUser;
+import project.moodipie.config.JWTUtil;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
-import project.moodipie.user.controller.dto.response.SignUpResponse;
+import project.moodipie.user.controller.dto.response.UserServiceResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
-import project.moodipie.user.controller.dto.response.UserResponse;
+import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
 import project.moodipie.user.repository.UserRepository;
@@ -23,36 +24,45 @@ import project.moodipie.user.repository.UserRepository;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    @Value("${jwt.secret}")
+    private String secretKey;
+    private final Long expireMs =  10 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
 
-    public SignUpResponse signup(CreateUserRequest createUserRequest) {
+    public UserServiceResponse signup(CreateUserRequest createUserRequest) {
         User newuser = createUserRequest.toEntity();
         User existingUser = userRepository.findByEmail(createUserRequest.getEmail());
         if (existingUser != null) {
-            return SignUpResponse.builder()
-                    .message("Email already exists. Please use a different email.")
+            return UserServiceResponse.builder()
+                    .message("해당하는 이메일이 존재합니다.")
                     .build();
         }
         userRepository.save(newuser);
-        return SignUpResponse.builder()
-                .message("Sign up successful. Please login to continue")
+        return UserServiceResponse.builder()
+                .message("회원가입 성공, 로그인해주세요")
                 .build();
     }
 
-    public void updateUser(String email, UpdateUserRequest updateRequest) {
+    public UserServiceResponse updateUser(String email, UpdateUserRequest updateRequest) {
         User user = findUserByEmail(email);
         user.updateName(updateRequest.getName());
         user.updateProfilePicture(updateRequest.getProfilePicture());
         userRepository.save(user);
+        return UserServiceResponse.builder()
+                .message("수정이 완료되었습니다.")
+                .build();
     }
 
-    public void deleteUserByEmail(String email) {
+    public UserServiceResponse deleteUserByEmail(String email) {
         userRepository.deleteByEmail(email);
+        return UserServiceResponse.builder()
+                .message("회원 탈퇴가 완료되었습니다.")
+                .build();
     }
 
     public User findUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new RestfullException("User Not Found",HttpStatus.BAD_REQUEST);
+            throw new RestfullException("회원을 찾을 수 없습니다.",HttpStatus.BAD_REQUEST);
         }
         return user;
     }
@@ -61,22 +71,22 @@ public class UserService {
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
         User currentuser = userRepository.findByEmail(userLoginRequest.getEmail());
         if (currentuser == null) {
-            return new UserLoginResponse("NOT_FOUND_ID");
+            return new UserLoginResponse("회원을 찾을 수 없습니다.", null);
         }
         if (currentuser.getPassword().equals(userLoginRequest.getPassword())) {
-            return new UserLoginResponse("LOGIN_SUCCESS");
+            if (currentuser.isFirstLogin()) {
+                currentuser.setFirstLogin(false);
+                return new UserLoginResponse("첫 로그인 성공",
+                        JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
+            }
+            return new UserLoginResponse("로그인 성공",
+                    JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
         }
-        return new UserLoginResponse("WRONG_PASSWORD");
+        return new UserLoginResponse("잘못된 비밀번호입니다.", null);
     }
 
-
-
-    public UserResponse getUserInfo(SessionUser currentUser) {
-        User user = userRepository.getReferenceByName(currentUser.getUsername());
-        return UserResponse.from(user);
-    }
-
-    public void save(User currentUser) {
-        userRepository.save(currentUser);
+    public UserInfoResponse getUserInfo(String userEmail) {
+        User user = userRepository.findByEmail(userEmail);
+        return UserInfoResponse.from(user);
     }
 }

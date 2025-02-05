@@ -4,20 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.moodipie.config.JWTUtil;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
-import project.moodipie.user.controller.dto.SessionUser;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
-import project.moodipie.user.controller.dto.response.SignUpResponse;
+import project.moodipie.user.controller.dto.response.UserServiceResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
-import project.moodipie.user.controller.dto.response.UserResponse;
-import project.moodipie.user.entity.User;
-import project.moodipie.user.handler.exeption.RestfullException;
+import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.service.UserService;
 
 @RestController
@@ -25,36 +22,35 @@ import project.moodipie.user.service.UserService;
 @Tag(name="회원", description ="회원관리 CRUD")
 public class UserController {
     private final UserService userService;
-    private final HttpSession session;
+    private final JWTUtil jwtUtil;
+
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
-    })
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "이름 : 김무디, 프로필 사진 : moody") })
     @GetMapping("/users")
-    public UserResponse userPage() {
-        SessionUser currentUser = getSessionUser();
-        return userService.getUserInfo(currentUser);
+    public ResponseEntity<UserInfoResponse> userPage(@RequestHeader("Authorization") String token) {
+        String userEmail = JWTUtil.getEmailFromToken(token.split(" ")[1],jwtUtil.getSecretKey());
+        return ResponseEntity.ok(userService.getUserInfo(userEmail));
     }
     @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
     @PutMapping("/users")
-    public void updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
-        SessionUser currentUser = getSessionUser();
-        userService.updateUser(currentUser.getEmail(), updateUserRequest);
-        User updateduser = userService.findUserByEmail(currentUser.getEmail());
-        this.session.setAttribute("currentUser", new SessionUser(updateduser));
+    public ResponseEntity<UserServiceResponse> updateUser(
+            @RequestHeader("Authorization") String token,
+            @RequestBody UpdateUserRequest updateUserRequest) {
+        String userEmail = JWTUtil.getEmailFromToken(token.split(" ")[1],jwtUtil.getSecretKey());
+        return ResponseEntity.ok(userService.updateUser(userEmail,updateUserRequest));
     }
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "탈퇴 성공"),
     })
     @DeleteMapping("/users")
-    public void deleteUser() {
-        SessionUser currentUser = getSessionUser();
-        userService.deleteUserByEmail(currentUser.getEmail());
-        session.removeAttribute("currentUser");
+    public ResponseEntity<UserServiceResponse> deleteUser(@RequestHeader("Authorization") String token) {
+        String userEmail = JWTUtil.getEmailFromToken(token.split(" ")[1],jwtUtil.getSecretKey());
+        jwtUtil.expire(token); // 기능이 안됨
+        return ResponseEntity.ok(userService.deleteUserByEmail(userEmail));
     }
 
     @Operation(summary = "회원가입", description = "회원에 가입합니다.")
@@ -62,8 +58,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),
     })
     @PostMapping("/signup")
-    public SignUpResponse signup(@RequestBody CreateUserRequest createUserRequest) {
-        return userService.signup(createUserRequest);
+    public ResponseEntity<UserServiceResponse> signup(@RequestBody CreateUserRequest createUserRequest) {
+        return ResponseEntity.ok(userService.signup(createUserRequest));
     }
 
     @Operation(summary = "로그인", description = "내 정보로 로그인합니다.")
@@ -71,18 +67,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
     @PostMapping("/login")
-    public UserLoginResponse login(@RequestBody UserLoginRequest userLoginRequest) {
-        UserLoginResponse response = userService.login(userLoginRequest);
-        if ("LOGIN_SUCCESS".equals(response.getMessage())) {
-            User currentUser = userService.findUserByEmail(userLoginRequest.getEmail());
-            session.setAttribute("currentUser", new SessionUser(currentUser));
-            if (currentUser.isFirstLogin()) {
-                currentUser.setFirstLogin(false);
-                userService.save(currentUser);
-                return new UserLoginResponse("FIRST_LOGIN_SUCCESS");
-            }
-        }
-        return response;
+    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+        return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
@@ -90,15 +76,18 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     })
     @PostMapping("/logout")
-    public void logout() {
-        session.invalidate();
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        jwtUtil.expire(token);
+        return ResponseEntity.ok("로그아웃");
     }
 
-    private SessionUser getSessionUser() {
-        SessionUser currentUser = (SessionUser) session.getAttribute("currentUser");
-        if (currentUser == null) {
-            throw new RestfullException("User is not logged in.", HttpStatus.BAD_REQUEST);
-        }
-        return currentUser;
+    @Operation(summary = "토큰 갱신", description = "만료된 토큰을 갱신합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
+    })
+    @PostMapping("/token")
+    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
+        String newToken = JWTUtil.refresh(token.split(" ")[1], jwtUtil.getSecretKey(), jwtUtil.getExpireMs());
+        return ResponseEntity.ok(newToken);
     }
 }

@@ -10,8 +10,11 @@ import lombok.RequiredArgsConstructor;
 public class UserLoginResponse {
     @Schema(description = "메세지", example = "회원가입이 완료되었습니다.")
     private String message;
+    @Schema(description = "토큰", example = "asdjasdiaojsdasdjaisd2132i438rdhi2d393")
+    private String token;
     @Builder
-    public UserLoginResponse(String message) {
+    public UserLoginResponse(String message, String token) {
         this.message = message;
+        this.token = token;
     }
 }

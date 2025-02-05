@@ -5,6 +5,8 @@ spring:
     allow-bean-definition-overriding: true
   config:
     import: spotify.yml
+  profiles:
+    include: jwt
   jpa:
     open-in-view: true
     hibernate:
@@ -26,3 +28,4 @@ logging:
         type:
           descriptor:
             sql: trace
+

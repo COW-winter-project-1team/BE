@@ -10,14 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
-import project.moodipie.user.controller.dto.request.LoginRequest;
+import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.SessionUser;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.response.SignUpResponse;
+import project.moodipie.user.controller.dto.response.UserLoginResponse;
 import project.moodipie.user.controller.dto.response.UserResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
-import project.moodipie.user.repository.UserRepository;
 import project.moodipie.user.service.UserService;
 
 @RestController
@@ -26,8 +26,6 @@ import project.moodipie.user.service.UserService;
 public class UserController {
     private final UserService userService;
     private final HttpSession session;
-    private final UserRepository userRepository;
-
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -73,16 +71,18 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
     @PostMapping("/login")
-    public void login(@RequestBody LoginRequest loginRequest) {
-        User loginuser = userService.login(loginRequest);
-        SessionUser currentUser = new SessionUser(loginuser);
-        if (loginuser.isFirstLogin()) {
-            session.setAttribute("currentUser", currentUser);
-            loginuser.setFirstLogin(false);
-            userRepository.save(loginuser);
-        } else {
-            session.setAttribute("currentUser", currentUser);
+    public UserLoginResponse login(@RequestBody UserLoginRequest userLoginRequest) {
+        UserLoginResponse response = userService.login(userLoginRequest);
+        if ("LOGIN_SUCCESS".equals(response.getMessage())) {
+            User currentUser = userService.findUserByEmail(userLoginRequest.getEmail());
+            session.setAttribute("currentUser", new SessionUser(currentUser));
+            if (currentUser.isFirstLogin()) {
+                currentUser.setFirstLogin(false);
+                userService.save(currentUser);
+                return new UserLoginResponse("FIRST_LOGIN_SUCCESS");
+            }
         }
+        return response;
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
@@ -93,7 +93,6 @@ public class UserController {
     public void logout() {
         session.invalidate();
     }
-
 
     private SessionUser getSessionUser() {
         SessionUser currentUser = (SessionUser) session.getAttribute("currentUser");

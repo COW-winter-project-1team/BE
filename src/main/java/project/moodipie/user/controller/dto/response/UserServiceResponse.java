@@ -4,15 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @RequiredArgsConstructor
-public class SignUpResponse {
+public class UserServiceResponse {
     @Schema(description = "메세지", example = "회원가입이 완료되었습니다.")
     private String message;
     @Builder
-    public SignUpResponse(String message) {
+    public UserServiceResponse(String message) {
         this.message = message;
     }
 }

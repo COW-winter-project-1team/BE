@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 
-public class LoginRequest {
+public class SpotifyLoginRequest {
 
     @FormProperty("grant_type")
     private String grantType;
@@ -15,7 +15,7 @@ public class LoginRequest {
     private String clientSecret;
 
 
-    public LoginRequest(String grantType, String clientId, String clientSecret) {
+    public SpotifyLoginRequest(String grantType, String clientId, String clientSecret) {
         this.grantType = grantType;
         this.clientId = clientId;
         this.clientSecret = clientSecret;

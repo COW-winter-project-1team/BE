@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.spotify.configuration.client.*;
 import project.moodipie.spotify.configuration.client.Auth.AuthSpotifyClient;
-import project.moodipie.spotify.configuration.client.Auth.LoginRequest;
+import project.moodipie.spotify.configuration.client.Auth.SpotifyLoginRequest;
 import project.moodipie.spotify.configuration.client.SpotifyYml;
 import project.moodipie.spotify.configuration.controller.dto.request.SpotifyTrackRequest;
 
@@ -100,7 +100,7 @@ public class SpotifyTrackService {
     }
 
     private String getToken() {
-        LoginRequest request = new LoginRequest(
+        SpotifyLoginRequest request = new SpotifyLoginRequest(
                 spotifyYml.getGrantType(),
                 spotifyYml.getClientId(),
                 spotifyYml.getClientSecret()

@@ -4,12 +4,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
+@Getter
 public class JWTUtil {
     @Value("${jwt.secret}")
     private String secretKey;
@@ -54,6 +56,10 @@ public class JWTUtil {
         System.out.println("Token has been expired: " + token);
     }
 
-    public String getSecretKey() {return secretKey;}
-    public Long getExpireMs() {return expireMs;}
+    public void expireByEmail(String userEmail) {
+        if (userEmail != null) {
+
+        }
+    }
+
 }

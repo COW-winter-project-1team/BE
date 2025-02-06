@@ -6,11 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.moodipie.Emotion;
-import project.moodipie.user.entity.User;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
+import project.moodipie.user.entity.User;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -26,9 +26,10 @@ public class Playlist {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private Long playlistNumber;
     private String title;
     private String playlistImage;
-    private Date timestamp;
+    private LocalDate timestamp;
     private Emotion emotion;
 
 
@@ -37,7 +38,8 @@ public class Playlist {
 
 
     @Builder
-    public Playlist(final User user, final String title, final String playlistImage, final Date timestamp, final Emotion emotion) {
+    public Playlist(Long playlistNumber,final User user, final String title, final String playlistImage, final LocalDate timestamp, final Emotion emotion) {
+        this.playlistNumber = playlistNumber;
         this.user = user;
         this.title = title;
         this.playlistImage = playlistImage;

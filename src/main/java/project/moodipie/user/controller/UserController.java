@@ -1,55 +1,57 @@
 package project.moodipie.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.config.JWTUtil;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
-import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
-import project.moodipie.user.controller.dto.response.UserServiceResponse;
-import project.moodipie.user.controller.dto.response.UserLoginResponse;
+import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
+import project.moodipie.user.controller.dto.response.UserLoginResponse;
+import project.moodipie.user.controller.dto.response.UserServiceResponse;
 import project.moodipie.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name="회원", description ="회원관리 CRUD")
+@Tag(name = "회원", description = "회원관리 CRUD")
 public class UserController {
     private final UserService userService;
     private final JWTUtil jwtUtil;
 
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
-    @ApiResponses({ @ApiResponse(responseCode = "200", description = "이름 : 김무디, 프로필 사진 : moody") })
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "이름 : 김무디, 프로필 사진 : moody")})
     @GetMapping("/users")
-    public ResponseEntity<UserInfoResponse> userPage(@RequestHeader("Authorization") String token) {
-        String userEmail = JWTUtil.getEmailFromToken(token.split(" ")[1],jwtUtil.getSecretKey());
+    public ResponseEntity<UserInfoResponse> userPage(
+            @Parameter(description = "유저 정보 얻기 위한 이메일")
+            @AuthenticationPrincipal String userEmail) {
         return ResponseEntity.ok(userService.getUserInfo(userEmail));
     }
+
     @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
     @PutMapping("/users")
     public ResponseEntity<UserServiceResponse> updateUser(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal String userEmail,
             @RequestBody UpdateUserRequest updateUserRequest) {
-        String userEmail = JWTUtil.getEmailFromToken(token.split(" ")[1],jwtUtil.getSecretKey());
-        return ResponseEntity.ok(userService.updateUser(userEmail,updateUserRequest));
+        return ResponseEntity.ok(userService.updateUser(userEmail, updateUserRequest));
     }
+
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "탈퇴 성공"),
     })
     @DeleteMapping("/users")
-    public ResponseEntity<UserServiceResponse> deleteUser(@RequestHeader("Authorization") String token) {
-        String userEmail = JWTUtil.getEmailFromToken(token.split(" ")[1],jwtUtil.getSecretKey());
-        jwtUtil.expire(token); // 기능이 안됨
+    public ResponseEntity<UserServiceResponse> deleteUser(@AuthenticationPrincipal String userEmail) {
+        jwtUtil.expireByEmail(userEmail); // 기능이 안됨
         return ResponseEntity.ok(userService.deleteUserByEmail(userEmail));
     }
 
@@ -67,7 +69,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+    public ResponseEntity<UserLoginResponse> login(
+            @RequestBody UserLoginRequest userLoginRequest) {
         return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 
@@ -76,8 +79,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     })
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
-        jwtUtil.expire(token);
+    public ResponseEntity<String> logout(@AuthenticationPrincipal String userEmail) {
+        jwtUtil.expireByEmail(userEmail);
         return ResponseEntity.ok("로그아웃");
     }
 

@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 public class PlaylistResponse {
     @Schema(description = "플레이 리스트 id", example = "1")
-    private Long id;
+    private Long playlistNumber;
     @Schema(description = "제목", example = "http://dfdfjiweoif.com")
     private String title;
     @Schema(description = "플레이리스트 이미지 URL", example = "http://dfdfjiweoif.com")
@@ -22,8 +22,8 @@ public class PlaylistResponse {
     private Emotion emotion;
 
     @Builder
-    public PlaylistResponse(Long id, String title, String playlistImage, Date timestamp, Emotion emotion) {
-        this.id = id;
+    public PlaylistResponse(Long playlistNumber, String title, String playlistImage, Date timestamp, Emotion emotion) {
+        this.playlistNumber = playlistNumber;
         this.title = title;
         this.playlistImage = playlistImage;
         this.timestamp = timestamp;
@@ -32,7 +32,7 @@ public class PlaylistResponse {
 
     public static PlaylistResponse from(Playlist playlist) {
         return PlaylistResponse.builder()
-                .id(playlist.getId())
+                .playlistNumber(playlist.getPlaylistNumber())
                 .title(playlist.getTitle())
                 .playlistImage(playlist.getPlaylistImage())
                 .timestamp(playlist.getTimestamp())

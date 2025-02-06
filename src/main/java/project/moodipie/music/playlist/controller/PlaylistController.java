@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +26,6 @@ import java.util.List;
 public class PlaylistController {
 
     private final PlaylistService playlistService;
-    private final HttpSession session;
     private final UserService userService;
 
     @Operation(summary = "플레이리스트 생성", description = "새로운 플레이리스트를 생성합니다.")
@@ -36,7 +35,7 @@ public class PlaylistController {
     @PostMapping
     public void savePlaylist(
             @AuthenticationPrincipal String userEmail,
-            @RequestBody CreatePlaylistRequest request) {
+            @Valid @RequestBody CreatePlaylistRequest request) {
         playlistService.savePlaylist(userEmail, request);
     }
 
@@ -60,7 +59,7 @@ public class PlaylistController {
     public void updatePlaylist(
             @AuthenticationPrincipal String userEmail,
             @PathVariable("playlistNumber") Long playlistNumber,
-            @RequestBody UpdatePlaylistRequest updatePlaylistRequest) {
+            @Valid @RequestBody UpdatePlaylistRequest updatePlaylistRequest) {
         playlistService.updatePlaylist(userEmail, playlistNumber, updatePlaylistRequest);
     }
 

@@ -16,8 +16,12 @@ import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
 import project.moodipie.user.controller.dto.response.UserServiceResponse;
+import project.moodipie.user.handler.exeption.RestfullException;
 import project.moodipie.user.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "회원", description = "회원관리 CRUD")
@@ -91,5 +95,12 @@ public class UserController {
     public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
         String newToken = JWTUtil.refresh(token.split(" ")[1], jwtUtil.getSecretKey(), jwtUtil.getExpireMs());
         return ResponseEntity.ok(newToken);
+    }
+    @ExceptionHandler(RestfullException.class)
+    public ResponseEntity<Map<String, Object>> handleRestfullException(RestfullException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("status", ex.getStatus().value());
+        return ResponseEntity.status(ex.getStatus()).body(response);
     }
 }

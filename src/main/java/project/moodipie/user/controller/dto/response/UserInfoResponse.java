@@ -12,13 +12,10 @@ import project.moodipie.user.entity.User;
 public class UserInfoResponse {
     @Schema(description = "이름", example = "홍길동")
     private String username;
-    @Schema(description = "프로필 사진", example = "13855")
-    private Integer profilePicture;
 
     public static UserInfoResponse from(User user) {
         return UserInfoResponse.builder()
                 .username(user.getName())
-                .profilePicture(user.getProfileImage())
                 .build();
     }
 

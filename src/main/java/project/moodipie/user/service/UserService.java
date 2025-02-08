@@ -17,8 +17,6 @@ import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
 import project.moodipie.user.repository.UserRepository;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Component
@@ -30,23 +28,18 @@ public class UserService {
     private final Long expireMs =  10 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
 
     public UserServiceResponse signup(CreateUserRequest createUserRequest) {
-        User newuser = createUserRequest.toEntity();
-        Optional<User> existingUser = userRepository.findByEmail(createUserRequest.getEmail());
-        if (existingUser.isPresent()) {
-            return UserServiceResponse.builder()
-                    .message("해당하는 이메일이 존재합니다.")
-                    .build();
+        if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
+            throw new RestfullException(HttpStatus.CONFLICT, "해당하는 이메일이 존재합니다.");
         }
-        userRepository.save(newuser);
+        userRepository.save(createUserRequest.toEntity());
         return UserServiceResponse.builder()
                 .message("회원가입 성공, 로그인해주세요")
                 .build();
     }
 
-    public UserServiceResponse updateUser(String email, UpdateUserRequest updateRequest) {
-        User user = findUserByEmail(email);
+    public UserServiceResponse updateUser(String userEmail, UpdateUserRequest updateRequest) {
+        User user = findUserbyEmail(userEmail);
         user.updateName(updateRequest.getName());
-        user.updateProfilePicture(updateRequest.getProfilePicture());
         userRepository.save(user);
         return UserServiceResponse.builder()
                 .message("수정이 완료되었습니다.")
@@ -54,40 +47,33 @@ public class UserService {
     }
 
     public UserServiceResponse deleteUserByEmail(String userEmail) {
+        User user = findUserbyEmail(userEmail); //확인 차
         userRepository.deleteByEmail(userEmail);
         return UserServiceResponse.builder()
                 .message("회원 탈퇴가 완료되었습니다.")
                 .build();
     }
 
-    public User findUserByEmail(String userEmail) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
-        if (user == null) {
-            throw new RestfullException("회원을 찾을 수 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        return user;
-    }
-
     @Transactional
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
-        User currentuser = userRepository.findByEmail(userLoginRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
-        if (currentuser == null) {
-            return new UserLoginResponse("회원을 찾을 수 없습니다.", null);
+        User currentuser = findUserbyEmail(userLoginRequest.getEmail());
+        if (!currentuser.getPassword().equals(userLoginRequest.getPassword())) {
+            throw new RestfullException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
-        if (currentuser.getPassword().equals(userLoginRequest.getPassword())) {
-            if (currentuser.isFirstLogin()) {
-                currentuser.setFirstLogin(false);
-                return new UserLoginResponse("첫 로그인 성공",
-                        JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
-            }
-            return new UserLoginResponse("로그인 성공",
+        if (currentuser.isFirstLogin()) {
+            currentuser.setFirstLogin(false);// save 안해도 되나?
+            return new UserLoginResponse("첫 로그인 성공",
                     JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
         }
-        return new UserLoginResponse("잘못된 비밀번호입니다.", null);
+        return new UserLoginResponse("로그인 성공",
+                JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
     }
 
     public UserInfoResponse getUserInfo(String userEmail) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
         return UserInfoResponse.from(user);
+    }
+    public User findUserbyEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
     }
 }

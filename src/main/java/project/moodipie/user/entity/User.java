@@ -25,7 +25,6 @@ public class User {
     private String email;
     private String password;
     private boolean firstLogin;
-    private Integer profileImage;
 
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
     private List<Playlist> playlists = new ArrayList<>();
@@ -39,10 +38,8 @@ public class User {
         this.email = email;
         this.password = password;
         this.firstLogin = true;
-        this.profileImage = 0;
     }
     public void updateName(String name) {
         this.name = name;
     }
-    public void updateProfilePicture(Integer profilePicture) {this.profileImage = profilePicture;}
 }

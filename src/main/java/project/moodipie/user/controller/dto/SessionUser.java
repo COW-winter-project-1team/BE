@@ -12,13 +12,10 @@ public class SessionUser {
     private String username;
     @Schema(description = "이메일", example = "moodipie@gmail.com")
     private String email;
-    @Schema(description = "프로필 사진", example = "13588")
-    private Integer picture;
 
     public SessionUser(User user) {
         this.id = user.getId();
         this.username = user.getName();
         this.email = user.getEmail();
-        this.picture = user.getProfileImage();
     }
 }

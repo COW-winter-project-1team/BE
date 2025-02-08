@@ -1,6 +1,7 @@
 package project.moodipie.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import project.moodipie.user.controller.dto.response.UserServiceResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.handler.exeption.RestfullException;
 import project.moodipie.user.repository.UserRepository;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Component

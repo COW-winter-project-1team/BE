@@ -15,7 +15,7 @@ import project.moodipie.spotify.configuration.service.SpotifyTrackService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/spotify/api")
+@RequestMapping("/api/spotify/api")
 @RequiredArgsConstructor
 @Tag(name = "스포티파이 api", description = "스포티파이 외부 api")
 public class SpotifyTrackController {

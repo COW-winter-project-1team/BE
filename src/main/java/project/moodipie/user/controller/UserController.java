@@ -20,6 +20,7 @@ import project.moodipie.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 @Tag(name = "회원", description = "회원관리 CRUD")
 public class UserController {
     private final UserService userService;
@@ -83,7 +84,7 @@ public class UserController {
         return ResponseEntity.ok("로그아웃");
     }
 
-    @Operation(summary = "토큰 갱신", description = "만료된 토큰을 갱신합니다.")
+    @Operation(summary = "토큰 갱신", description = "만료될 토큰을 갱신합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
     })

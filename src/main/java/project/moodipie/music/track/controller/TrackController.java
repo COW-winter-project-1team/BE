@@ -16,7 +16,7 @@ import java.util.List;
 
 @Tag(name = "음악 CRUD", description = "스포티파이에서 가져온 음악정보")
 @RestController
-@RequestMapping("/tracks")
+@RequestMapping("/api/tracks")
 @RequiredArgsConstructor
 public class TrackController {
 

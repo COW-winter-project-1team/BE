@@ -83,7 +83,7 @@ public class PlaylistController {
     })
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist(@AuthenticationPrincipal String userEmail) {
-        Long userId = userService.findUserbyEmail(userEmail).getId();
+        Long userId = userService.findUserByEmail(userEmail).getId();
         List<PlaylistResponse> allPlaylist = playlistService.findAllPlaylistByUserId(userId);
         System.out.println(allPlaylist);
         return ResponseEntity.ok(allPlaylist);

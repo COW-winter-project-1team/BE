@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.config.JWTUtil;
+import project.moodipie.error.ApiRes;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
@@ -58,11 +60,14 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "회원에 가입합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "201", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "404", description = "회원가입 실패(null 존재)")
     })
     @PostMapping("/signup")
-    public ResponseEntity<UserServiceResponse> signup(@RequestBody CreateUserRequest createUserRequest) {
-        return ResponseEntity.ok(userService.signup(createUserRequest));
+    public ResponseEntity<ApiRes<CreateUserRequest>> signup(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        CreateUserRequest signup = userService.signup(createUserRequest);
+        ApiRes<CreateUserRequest> response = ApiRes.created(signup);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "로그인", description = "내 정보로 로그인합니다.")

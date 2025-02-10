@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/playlists")
+@RequestMapping("/api/playlists")
 @Tag(name = "플레이리스트", description = "플레이리스트 CRUD")
 public class PlaylistController {
 
@@ -83,7 +83,7 @@ public class PlaylistController {
     })
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> findAllPlaylist(@AuthenticationPrincipal String userEmail) {
-        Long userId = userService.findUserByEmail(userEmail).getId();
+        Long userId = userService.findUserbyEmail(userEmail).getId();
         List<PlaylistResponse> allPlaylist = playlistService.findAllPlaylistByUserId(userId);
         System.out.println(allPlaylist);
         return ResponseEntity.ok(allPlaylist);

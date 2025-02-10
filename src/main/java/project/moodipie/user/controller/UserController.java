@@ -69,8 +69,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(
-            @RequestBody UserLoginRequest userLoginRequest) {
+    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
         return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 

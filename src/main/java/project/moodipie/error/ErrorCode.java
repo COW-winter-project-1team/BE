@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    VALID_EMPTY_EXCEPTION(404, "G001", "모든 값이 존재해야 합니다.");
+    VALID_EMPTY_EXCEPTION(400, "G001", "모든 값이 존재해야 합니다.");
 
     private final int status;
     private final String divisionCode;

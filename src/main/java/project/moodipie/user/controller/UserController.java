@@ -67,7 +67,7 @@ public class UserController {
     public ResponseEntity<ApiRes<CreateUserRequest>> signup(@Valid @RequestBody CreateUserRequest createUserRequest) {
         CreateUserRequest signup = userService.signup(createUserRequest);
         ApiRes<CreateUserRequest> response = ApiRes.created(signup);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "로그인", description = "내 정보로 로그인합니다.")

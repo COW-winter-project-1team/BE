@@ -43,6 +43,14 @@ public final class ApiRes<T> {
                 .build();
     }
 
+    public static <T> ApiRes<T> delete(final T data) {
+        return ApiRes.<T>builder()
+                .httpStatus(SuccessCode.DELETE_SUCCESS.getStatus())
+                .data(data)
+                .message(SuccessCode.DELETE_SUCCESS.getMessage())
+                .build();
+    }
+
     // 실패 응답 (오류 코드 + `FieldErrors`)
     public static <T> ApiRes<T> error(ErrorCode code, List<FieldErrors> errors) {
         return ApiRes.<T>builder()

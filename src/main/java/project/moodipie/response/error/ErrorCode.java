@@ -4,10 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    VALID_EMPTY_EXCEPTION(400, "G001", "모든 값이 존재해야 합니다."),
+    INVALID_EMPTY_EXCEPTION(400, "G001", "유효하지 않은 값이 존재합니다."),
     TOKEN_EXPIRED(401, "T001", "토큰이 만료되었습니다."),
     TOKEN_INVALID(401, "T002", "토큰이 유효하지 않습니다."),
-    TOKEN_FAIL(401, "T003", "올바르지 않은 토큰입니다.");
+    TOKEN_FAIL(401, "T003", "잘못된 형식의 토큰입니다."),
+    INVALID_EMAIL_FORMAT(400,"L001", "해당하는 아이디가 없습니다."),
+    INVALID_FORMAT(400,"G002", "잘못된 형식입니다."),
+    INVALID_PASSWORD_FORMAT(400,"L002", "잘못된 비밀번호 입니다."),
+    NULL_EXCEPTION(400, "G003", "NULL값이 존재합니다.");
 
     private final int status;
     private final String divisionCode;

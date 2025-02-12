@@ -15,11 +15,13 @@ public class FieldErrors {
     private final String value;
     private final String reason;
 
-    protected static List<FieldErrors> of(final String field, final String value, final String reason) {
+    public static List<FieldErrors> of(final String field, final String value, final String reason) {
         List<FieldErrors> fieldErrors = new ArrayList<>();
         fieldErrors.add(new FieldErrors(field, value, reason));
         return fieldErrors;
     }
+
+
 
 
     public static List<FieldErrors> of(final BindingResult bindingResult) {

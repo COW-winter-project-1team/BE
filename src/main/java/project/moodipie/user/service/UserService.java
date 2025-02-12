@@ -6,14 +6,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.moodipie.config.JWTUtil;
+import project.moodipie.custom.InvalidFieldFormatException;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
-import project.moodipie.user.controller.dto.response.UserServiceResponse;
 import project.moodipie.user.entity.User;
 import project.moodipie.user.repository.UserRepository;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,27 +32,25 @@ public class UserService {
         return createUserRequest;
     }
 
-    public UserServiceResponse updateUser(String userEmail, UpdateUserRequest updateRequest) {
+    public UserInfoResponse updateUser(String userEmail, UpdateUserRequest updateRequest) {
         User user = findUserByEmail(userEmail);
-        user.updateName(updateRequest.getName());
-        userRepository.save(user);
-        return UserServiceResponse.builder()
-                .message("수정이 완료되었습니다.")
-                .build();
+        user.updateName(updateRequest);
+        return getUserInfo(userEmail);
     }
 
-    public UserServiceResponse deleteUserByEmail(String userEmail) {
+    public User deleteUserByEmail(String userEmail) {
         User user = findUserByEmail(userEmail); //확인 차
         userRepository.deleteByEmail(userEmail);
-        return UserServiceResponse.builder()
-                .message("회원 탈퇴가 완료되었습니다.")
-                .build();
+        return user;
     }
 
     @Transactional
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
         User currentuser = findUserByEmail(userLoginRequest.getEmail());
-
+        String password = userLoginRequest.getPassword();
+        if (!currentuser.getPassword().equals(password)){
+            throw new InvalidFieldFormatException("password", "비밀번호가 틀립니다.");
+        }
         if (currentuser.isFirstLogin()) {
             currentuser.setFirstLogin(false);// save 안해도 되나?
             return new UserLoginResponse("첫 로그인 성공",
@@ -61,10 +61,10 @@ public class UserService {
     }
 
     public UserInfoResponse getUserInfo(String userEmail) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("해당하는 아이디가 없습니다."));
         return UserInfoResponse.from(user);
     }
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당하는 아이디가 없습니다."));
     }
 }

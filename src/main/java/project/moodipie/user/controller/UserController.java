@@ -17,7 +17,7 @@ import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
-import project.moodipie.user.controller.dto.response.UserServiceResponse;
+import project.moodipie.user.entity.User;
 import project.moodipie.user.service.UserService;
 
 @RestController
@@ -44,10 +44,12 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
     @PutMapping("/users")
-    public ResponseEntity<UserServiceResponse> updateUser(
+    public ResponseEntity<ApiRes<UserInfoResponse>> updateUser(
             @AuthenticationPrincipal String userEmail,
-            @RequestBody UpdateUserRequest updateUserRequest) {
-        return ResponseEntity.ok(userService.updateUser(userEmail, updateUserRequest));
+            @Valid @RequestBody UpdateUserRequest updateUserRequest) {
+        UserInfoResponse userInfoResponse = userService.updateUser(userEmail, updateUserRequest);
+        ApiRes<UserInfoResponse> response = ApiRes.ok(userInfoResponse);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴합니다.")
@@ -55,9 +57,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "탈퇴 성공"),
     })
     @DeleteMapping("/users")
-    public ResponseEntity<UserServiceResponse> deleteUser(@AuthenticationPrincipal String userEmail) {
-        jwtUtil.expireByEmail(userEmail); // 기능이 안됨
-        return ResponseEntity.ok(userService.deleteUserByEmail(userEmail));
+    public ResponseEntity<ApiRes<User>> deleteUser(@AuthenticationPrincipal String userEmail) {
+        jwtUtil.expireByEmail(userEmail); //Redis 써야함
+        User user = userService.deleteUserByEmail(userEmail);
+        ApiRes<User> response = ApiRes.delete(user);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "회원가입", description = "회원에 가입합니다.")
@@ -77,7 +81,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
     })
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+    public ResponseEntity<UserLoginResponse> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
         return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 

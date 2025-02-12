@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,10 +23,14 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        if (requestURI.equals("/api/login") || requestURI.equals("/api/signup") || requestURI.equals("/api/logout") || requestURI.startsWith("/api/spotify"))  {
+            filterChain.doFilter(request, response);
+            return;
+        }
         try {
             // 헤더 검증
-            String authorization = getAuthorizationHeader(request);
-
+            String authorization = getAuthorization(request, response, filterChain);
             // Token 추출
             String token = extractToken(authorization);
 
@@ -42,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getAuthorizationHeader(HttpServletRequest request) {
+    private static @NotNull String getAuthorization(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             throw new IllegalArgumentException("유효하지 않은 토큰");
@@ -52,16 +57,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private String extractToken(String authorization) {
         String token = authorization.split(" ")[1];
-        if (!token.equals(JWTUtil.getEmailFromToken(token, secretKey))){
-            throw new MalformedJwtException("잘못된 형식 토큰");
-        }
         return token;
     }
 
     private String getEmailFromToken(String token) {
         String userEmail = JWTUtil.getEmailFromToken(token, secretKey);
         if (userEmail == null) {
-            throw new IllegalArgumentException("유효하지 않은 토큰");
+            throw new MalformedJwtException("잘못된 형식 토큰");
         }
         return userEmail;
     }

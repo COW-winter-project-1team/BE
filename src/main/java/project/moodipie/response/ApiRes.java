@@ -1,8 +1,11 @@
-package project.moodipie.error;
+package project.moodipie.response;
 
 
 import lombok.Builder;
 import lombok.Getter;
+import project.moodipie.response.error.ErrorCode;
+import project.moodipie.response.error.FieldErrors;
+import project.moodipie.response.success.SuccessCode;
 
 import java.util.List;
 

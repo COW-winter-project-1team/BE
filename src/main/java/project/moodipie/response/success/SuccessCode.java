@@ -1,4 +1,4 @@
-package project.moodipie.error;
+package project.moodipie.response.success;
 
 import lombok.Getter;
 

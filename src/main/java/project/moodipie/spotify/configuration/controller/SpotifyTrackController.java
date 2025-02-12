@@ -5,10 +5,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.music.track.service.TrackService;
+import project.moodipie.response.ApiRes;
 import project.moodipie.spotify.configuration.controller.dto.request.SpotifyTrackRequest;
 import project.moodipie.spotify.configuration.service.SpotifyTrackService;
 
@@ -28,8 +31,10 @@ public class SpotifyTrackController {
             @ApiResponse(responseCode = "200", description = "저장 성공"),
     })
     @PostMapping("tracks")
-    public void saveTracks(@RequestBody List<SpotifyTrackRequest> request) throws JsonProcessingException {
+    public ResponseEntity<ApiRes<List<CreateTrackRequest>>> saveTracks(@RequestBody @Valid List<SpotifyTrackRequest> request) throws JsonProcessingException {
         List<CreateTrackRequest> tracks = spotifyTrackService.createTrackRequests(request);
         trackService.save(tracks);
+        ApiRes<List<CreateTrackRequest>> response = ApiRes.ok(tracks);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 }

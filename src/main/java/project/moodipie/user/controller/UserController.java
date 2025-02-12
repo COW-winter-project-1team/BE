@@ -31,10 +31,12 @@ public class UserController {
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "이름 : 김무디, 프로필 사진 : moody")})
     @GetMapping("/users")
-    public ResponseEntity<UserInfoResponse> userPage(
+    public ResponseEntity<ApiRes<UserInfoResponse>> userPage(
             @Parameter(description = "유저 정보 얻기 위한 이메일")
             @AuthenticationPrincipal String userEmail) {
-        return ResponseEntity.ok(userService.getUserInfo(userEmail));
+        UserInfoResponse userInfo = userService.getUserInfo(userEmail);
+        ApiRes<UserInfoResponse> response = ApiRes.ok(userInfo);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")

@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import project.moodipie.user.service.UserService;
@@ -19,6 +20,7 @@ public class WebSecurityConfig {
 
     private final UserService userService;
 
+    private final AuthenticationEntryPoint entryPoint;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -42,6 +44,7 @@ public class WebSecurityConfig {
                                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(new JWTFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(handler-> handler.authenticationEntryPoint(entryPoint))
                 .build();
     }
 

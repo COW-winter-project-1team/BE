@@ -35,6 +35,14 @@ public final class ApiRes<T> {
                 .build();
     }
 
+    public static <T> ApiRes<T> ok(final T data) {
+        return ApiRes.<T>builder()
+                .httpStatus(SuccessCode.SELECT_SUCCESS.getStatus())
+                .data(data)
+                .message(SuccessCode.SELECT_SUCCESS.getMessage())
+                .build();
+    }
+
     // 실패 응답 (오류 코드 + `FieldErrors`)
     public static <T> ApiRes<T> error(ErrorCode code, List<FieldErrors> errors) {
         return ApiRes.<T>builder()
@@ -42,6 +50,14 @@ public final class ApiRes<T> {
                 .divisionCode(code.getDivisionCode())
                 .message(code.getMessage())
                 .errors(errors)
+                .build();
+    }
+
+    public static <T> ApiRes<T> error(ErrorCode code) {
+        return ApiRes.<T>builder()
+                .httpStatus(code.getStatus())
+                .divisionCode(code.getDivisionCode())
+                .message(code.getMessage())
                 .build();
     }
 

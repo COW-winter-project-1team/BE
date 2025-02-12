@@ -1,6 +1,7 @@
 package project.moodipie.config;
 
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -21,35 +22,55 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            // 헤더 검증
+            String authorization = getAuthorizationHeader(request);
 
-        final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        logger.info("Authorization = " + authorization);
-        if(authorization == null || !authorization.startsWith("Bearer ")){
-            logger.error("Authorization 이 없습니다.");
-            filterChain.doFilter(request, response);
-            return;
+            // Token 추출
+            String token = extractToken(authorization);
+
+            // 이메일 추출
+            String userEmail = getEmailFromToken(token);
+
+            // 사용자 인증 처리
+            setAuthentication(userEmail, token, request);
+
+        } catch (Exception e) {
+            //만료 에러
+            request.setAttribute("exception", e);
         }
-
-        String token = authorization.split(" ")[1];
-
-        if(JWTUtil.isExpired(token,secretKey)){
-            logger.error("Token이 만료되었습니다.");
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String userEmail = JWTUtil.getEmailFromToken(token, secretKey);
-        if (userEmail == null) {
-            logger.error("Token에서 email을 추출할 수 없습니다.");
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userEmail, null, List.of(new SimpleGrantedAuthority("USER")));
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
         filterChain.doFilter(request, response);
     }
+
+    private String getAuthorizationHeader(HttpServletRequest request) {
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("유효하지 않은 토큰");
+        }
+        return authorization;
+    }
+
+    private String extractToken(String authorization) {
+        String token = authorization.split(" ")[1];
+        if (!token.equals(JWTUtil.getEmailFromToken(token, secretKey))){
+            throw new MalformedJwtException("잘못된 형식 토큰");
+        }
+        return token;
+    }
+
+    private String getEmailFromToken(String token) {
+        String userEmail = JWTUtil.getEmailFromToken(token, secretKey);
+        if (userEmail == null) {
+            throw new IllegalArgumentException("유효하지 않은 토큰");
+        }
+        return userEmail;
+    }
+
+
+    private void setAuthentication(String userEmail, String token, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(userEmail, token, List.of(new SimpleGrantedAuthority("USER")));
+        authenticated.setDetails(new WebAuthenticationDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticated);
+    }
+
 }

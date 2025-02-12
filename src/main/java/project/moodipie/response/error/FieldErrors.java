@@ -21,6 +21,7 @@ public class FieldErrors {
         return fieldErrors;
     }
 
+
     public static List<FieldErrors> of(final BindingResult bindingResult) {
         final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         return fieldErrors.stream()

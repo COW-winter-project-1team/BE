@@ -6,15 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.config.JWTUtil;
+import project.moodipie.config.JWT.JWTUtil;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
-import project.moodipie.user.controller.dto.response.UserServiceResponse;
 import project.moodipie.user.entity.User;
-import project.moodipie.user.handler.exeption.RestfullException;
+import project.moodipie.user.handler.exception.RestfullException;
 import project.moodipie.user.repository.UserRepository;
 
 @Service
@@ -27,36 +26,29 @@ public class UserService {
     private String secretKey;
     private final Long expireMs =  10 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
 
-    public UserServiceResponse signup(CreateUserRequest createUserRequest) {
+    public CreateUserRequest signup(CreateUserRequest createUserRequest) {
         if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
             throw new RestfullException(HttpStatus.CONFLICT, "해당하는 이메일이 존재합니다.");
         }
         userRepository.save(createUserRequest.toEntity());
-        return UserServiceResponse.builder()
-                .message("회원가입 성공, 로그인해주세요")
-                .build();
+        return createUserRequest;
     }
 
-    public UserServiceResponse updateUser(String userEmail, UpdateUserRequest updateRequest) {
-        User user = findUserbyEmail(userEmail);
-        user.updateName(updateRequest.getName());
-        userRepository.save(user);
-        return UserServiceResponse.builder()
-                .message("수정이 완료되었습니다.")
-                .build();
+    public UserInfoResponse updateUser(String userEmail, UpdateUserRequest updateRequest) {
+        User user = findUserByEmail(userEmail);
+        user.updateName(updateRequest);
+        return getUserInfo(userEmail);
     }
 
-    public UserServiceResponse deleteUserByEmail(String userEmail) {
-        User user = findUserbyEmail(userEmail); //확인 차
+    public User deleteUserByEmail(String userEmail) {
+        User user = findUserByEmail(userEmail); //확인 차
         userRepository.deleteByEmail(userEmail);
-        return UserServiceResponse.builder()
-                .message("회원 탈퇴가 완료되었습니다.")
-                .build();
+        return user;
     }
 
     @Transactional
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
-        User currentuser = findUserbyEmail(userLoginRequest.getEmail());
+        User currentuser = findUserByEmail(userLoginRequest.getEmail());
         if (!currentuser.getPassword().equals(userLoginRequest.getPassword())) {
             throw new RestfullException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
@@ -73,7 +65,7 @@ public class UserService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
         return UserInfoResponse.from(user);
     }
-    public User findUserbyEmail(String email) {
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
     }
 }

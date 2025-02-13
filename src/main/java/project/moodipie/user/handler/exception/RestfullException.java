@@ -1,4 +1,4 @@
-package project.moodipie.user.handler.exeption;
+package project.moodipie.user.handler.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

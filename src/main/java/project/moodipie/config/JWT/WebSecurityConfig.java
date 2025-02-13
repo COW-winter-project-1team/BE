@@ -1,4 +1,4 @@
-package project.moodipie.config;
+package project.moodipie.config.JWT;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import project.moodipie.user.service.UserService;
@@ -19,6 +20,7 @@ public class WebSecurityConfig {
 
     private final UserService userService;
 
+    private final AuthenticationEntryPoint entryPoint;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -28,13 +30,12 @@ public class WebSecurityConfig {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/api/login", "/api/signup","/api/logout").permitAll();
+                    requests.requestMatchers("/api/login", "/api/signup").permitAll();
                     requests.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll();
-                    requests.requestMatchers("/api/users","/api/token").authenticated();
+                    requests.requestMatchers("/api/users","/api/token", "/api/logout").authenticated();
                     requests.requestMatchers("/api/playlists/**","/api/tracks/**").authenticated();
-                    requests.requestMatchers("/api/spotify/api/tracks").permitAll();
+                    requests.requestMatchers("/api/spotify/api/tracks").authenticated();
 
                 })
                 .sessionManagement(
@@ -42,6 +43,7 @@ public class WebSecurityConfig {
                                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(new JWTFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(handler-> handler.authenticationEntryPoint(entryPoint))
                 .build();
     }
 

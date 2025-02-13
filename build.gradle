@@ -37,23 +37,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.security:spring-security-crypto:5.7.1'
+    implementation 'org.testcontainers:testcontainers:1.19.0'
     implementation 'org.testcontainers:mysql:1.19.0'
     implementation "org.springframework.boot:spring-boot-configuration-processor"
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation 'com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    //jwt
+    implementation 'com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.2.0'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     //spotify
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:9.1.0'
-    implementation 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     //swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

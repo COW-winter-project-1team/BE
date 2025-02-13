@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.moodipie.music.playlist.entity.Playlist;
 import project.moodipie.music.playlist.entity.PlaylistTrack;
+import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class User {
         this.password = password;
         this.firstLogin = true;
     }
-    public void updateName(String name) {
-        this.name = name;
+    public void updateName(UpdateUserRequest updateUserRequest) {
+        this.name = updateUserRequest.getName();
     }
 }

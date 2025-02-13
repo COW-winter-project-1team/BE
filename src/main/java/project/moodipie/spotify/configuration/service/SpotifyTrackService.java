@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
 import project.moodipie.spotify.configuration.client.*;
@@ -21,6 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SpotifyTrackService {
+    private static final Logger log = LoggerFactory.getLogger(SpotifyTrackService.class);
     private final AuthSpotifyClient authSpotifyClient;
     private final TrackSpotifyClient trackSpotifyClient;
     private final ObjectMapper objectMapper;
@@ -31,8 +34,12 @@ public class SpotifyTrackService {
         List<String> trackNames  = new ArrayList<>();
         List<String> artistNames = new ArrayList<>() ;
         for (SpotifyTrackRequest spotifyTrackRequest : request) {
+            if (spotifyTrackRequest.getTrackName().isBlank() || spotifyTrackRequest.getArtistName().isBlank()) {
+                continue;
+            }
             trackNames.add(spotifyTrackRequest.getTrackName());
             artistNames.add(spotifyTrackRequest.getArtistName());
+
         }
         return searchTracks(trackNames, artistNames);
     }
@@ -62,11 +69,19 @@ public class SpotifyTrackService {
 
         JsonNode jsonsNode = response.path("tracks");
         ObjectNode arrayNode = objectMapper.createObjectNode();
-        String id = jsonsNode.path("items").get(0).path("id").asText();
 
+        JsonNode itemsNode = jsonsNode.path("items");
+
+        // 검색 결과가 없으면 그냥 빈 JSON 반환
+        if (itemsNode.isMissingNode() || !itemsNode.isArray() || itemsNode.isEmpty()) {
+            log.info("아티스트나, 노래제목이 달라 노래 저장을 한 개 건너뜁니다.");
+            return arrayNode;  // 그냥 빈 JSON 반환
+        }
+
+        String id = itemsNode.get(0).path("id").asText();
         return arrayNode.put("id", id);
-
     }
+
 
     private List<CreateTrackRequest> getTracks(String ids) throws JsonProcessingException {
         JsonNode response = trackSpotifyClient.getTracks("Bearer " + getToken(), ids);

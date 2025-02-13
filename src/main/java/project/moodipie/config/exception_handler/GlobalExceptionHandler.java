@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.response.error.FieldErrors;
+import project.moodipie.user.handlerexception.RestfullException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
@@ -35,5 +39,13 @@ public class GlobalExceptionHandler {
         log.error("handlerNullPointerException", exception);
         ApiRes<Object> error = ApiRes.error(ErrorCode.NULL_EXCEPTION);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
+    }
+
+    @ExceptionHandler(RestfullException.class)
+    public ResponseEntity<Map<String, Object>> handleRestfullException(RestfullException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("status", ex.getStatus().value());
+        return ResponseEntity.status(ex.getStatus()).body(response);
     }
 }

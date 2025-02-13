@@ -2,17 +2,18 @@ package project.moodipie.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.moodipie.config.JWTUtil;
-import project.moodipie.custom.InvalidFieldFormatException;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
 import project.moodipie.user.entity.User;
+import project.moodipie.user.handlerexception.RestfullException;
 import project.moodipie.user.repository.UserRepository;
 
 import java.util.NoSuchElementException;
@@ -47,9 +48,8 @@ public class UserService {
     @Transactional
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
         User currentuser = findUserByEmail(userLoginRequest.getEmail());
-        String password = userLoginRequest.getPassword();
-        if (!currentuser.getPassword().equals(password)){
-            throw new InvalidFieldFormatException("password", "비밀번호가 틀립니다.");
+        if (!currentuser.getPassword().equals(userLoginRequest.getPassword())) {
+            throw new RestfullException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
         if (currentuser.isFirstLogin()) {
             currentuser.setFirstLogin(false);// save 안해도 되나?
@@ -65,6 +65,6 @@ public class UserService {
         return UserInfoResponse.from(user);
     }
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당하는 아이디가 없습니다."));
+        return userRepository.findByEmail(email).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
     }
 }

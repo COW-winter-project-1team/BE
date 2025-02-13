@@ -52,10 +52,6 @@ public class JWTUtil {
         return createJwt(email, expiredMs, secretKey);
     }
 
-    public void expire(String token) {
-        System.out.println("Token has been expired: " + token);
-    }
-
     public void expireByEmail(String userEmail) {
         if (userEmail != null) {
 

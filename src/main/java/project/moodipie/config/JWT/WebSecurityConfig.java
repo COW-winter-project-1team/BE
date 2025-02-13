@@ -20,7 +20,6 @@ public class WebSecurityConfig {
 
     private final UserService userService;
 
-    private final AuthenticationEntryPoint entryPoint;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -43,7 +42,6 @@ public class WebSecurityConfig {
                                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(new JWTFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(handler-> handler.authenticationEntryPoint(entryPoint))
                 .build();
     }
 

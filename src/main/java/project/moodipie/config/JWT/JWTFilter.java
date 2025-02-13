@@ -1,13 +1,11 @@
 package project.moodipie.config.JWT;
 
-import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-@Order(0)
+import static project.moodipie.config.JWT.JWTUtil.isExpired;
+
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
     private final String secretKey;
@@ -29,6 +28,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (requestURI.matches("/api/(login|signup)") ||
                 requestURI.matches("/swagger-ui/.*") ||
                 requestURI.matches("/v3/api-docs/.*") ||
+                requestURI.matches("/v3/api-docs") ||
                 requestURI.equals("/v3/api-docs.yaml")) {
             filterChain.doFilter(request, response);
             return;
@@ -47,6 +47,11 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Malformed token");
             return;
+        }
+
+        if (isExpired(token,secretKey)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired");
         }
 
         setAuthentication(userEmail, token, request);

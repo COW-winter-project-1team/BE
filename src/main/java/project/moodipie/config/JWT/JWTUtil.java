@@ -15,7 +15,7 @@ import java.util.Date;
 public class JWTUtil {
     @Value("${jwt.secret}")
     private String secretKey;
-    private final Long expireMs = 10 * 60 * 1000L; // 10분
+    private final Long expireMs = 60 * 60 * 1000L; // 1시간
 
     public static String createJwt(String email, long expiredMs, String secretKey) {
         return Jwts.builder()

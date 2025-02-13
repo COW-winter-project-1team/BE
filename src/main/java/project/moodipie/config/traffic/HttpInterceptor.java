@@ -1,4 +1,4 @@
-package project.moodipie.config;
+package project.moodipie.config.traffic;
 
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;

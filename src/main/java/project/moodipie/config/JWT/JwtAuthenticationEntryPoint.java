@@ -1,4 +1,4 @@
-    package project.moodipie.config;
+    package project.moodipie.config.JWT;
 
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +18,12 @@
 
         @Override
         public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-            resolver.resolveException(request, response, null, (Exception) request.getAttribute("exception"));
+            Exception exception = (Exception) request.getAttribute("exception");
+            if (exception == null) {
+                exception = authException; // 예외가 없으면 기본 인증 예외 사용
+            }
+
+            resolver.resolveException(request, response, null, exception);
         }
     }
+

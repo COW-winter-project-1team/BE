@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import project.moodipie.Emotion;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 public class UpdatePlaylistRequest {
@@ -17,9 +15,6 @@ public class UpdatePlaylistRequest {
     @Schema(description = "플레이리스트 이미지 URL", example = "http://dfdfjiweoif.com")
     @NotNull
     private String playlistImage;
-    @Schema(description = "플레이리스트 생성 날짜", example = "2024-12-12")
-    @NotNull
-    private LocalDate timestamp;
     @Schema(description = "감정", example = "SAD")
     @NotNull
     private Emotion emotion;

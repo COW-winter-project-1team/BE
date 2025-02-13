@@ -1,4 +1,4 @@
-package project.moodipie.config.exception_handler;
+package project.moodipie.config.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.response.error.FieldErrors;
-import project.moodipie.user.handlerexception.RestfullException;
+import project.moodipie.user.handler.exception.RestfullException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ApiRes<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         log.error("handleMethodArgumentNotValidException", exception);
         BindingResult bindingResult = exception.getBindingResult();
-        ApiRes<Object> error = ApiRes.error(ErrorCode.INVALID_EMPTY_EXCEPTION, FieldErrors.of(bindingResult));
+        ApiRes<Object> error = ApiRes.error(ErrorCode.INVALID_VALUE, FieldErrors.of(bindingResult));
         return ResponseEntity.badRequest().body(error);
     }
 
@@ -30,14 +30,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<ApiRes<?>> handlerIllegalArgumentException(IllegalArgumentException exception) {
         log.error("handlerIllegalArgumentException", exception);
-        ApiRes<Object> error = ApiRes.error(ErrorCode.INVALID_EMPTY_EXCEPTION);
+        ApiRes<Object> error = ApiRes.error(ErrorCode.INVALID_VALUE);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
     }
 
     @ExceptionHandler(NullPointerException.class)
     protected ResponseEntity<ApiRes<?>> handlerNullPointerException(NullPointerException exception) {
         log.error("handlerNullPointerException", exception);
-        ApiRes<Object> error = ApiRes.error(ErrorCode.NULL_EXCEPTION);
+        ApiRes<Object> error = ApiRes.error(ErrorCode.NULL_VALUE);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
     }
 
@@ -47,5 +47,12 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage());
         response.put("status", ex.getStatus().value());
         return ResponseEntity.status(ex.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiRes<?>> handleException(Exception exception) {
+        log.error("handlerException", exception);
+        ApiRes<Object> error = ApiRes.error(ErrorCode.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(error.getHttpStatus()).body(error);
     }
 }

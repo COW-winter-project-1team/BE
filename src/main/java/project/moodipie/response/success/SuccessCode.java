@@ -13,8 +13,8 @@ public enum SuccessCode {
     DELETE_SUCCESS(200, "200", "DELETE SUCCESS"),
     // 삽입 성공 코드 (HTTP Response: 201 created)
     INSERT_SUCCESS(201, "201", "INSERT SUCCESS"),
-    // 수정 성공 코드 (HTTP Response: 201 created)
-    UPDATE_SUCCESS(204, "204", "UPDATE SUCCESS"),
+    // 수정 성공 코드 (HTTP Response: 204 created)
+    UPDATE_SUCCESS(200, "200", "UPDATE SUCCESS"),
 
     ; // End
 

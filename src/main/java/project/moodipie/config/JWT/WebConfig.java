@@ -1,9 +1,10 @@
-package project.moodipie.config;
+package project.moodipie.config.JWT;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import project.moodipie.config.traffic.HttpInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

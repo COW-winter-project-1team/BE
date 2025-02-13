@@ -1,4 +1,4 @@
-package project.moodipie.config;
+package project.moodipie.config.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

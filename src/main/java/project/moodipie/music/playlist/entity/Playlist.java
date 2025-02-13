@@ -50,7 +50,6 @@ public class Playlist {
     public void update(UpdatePlaylistRequest updatePlaylistRequest) {
         this.title = updatePlaylistRequest.getTitle();
         this.playlistImage = updatePlaylistRequest.getPlaylistImage();
-        this.timestamp = updatePlaylistRequest.getTimestamp();
         this.emotion = updatePlaylistRequest.getEmotion();
     }
 }

@@ -6,17 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.config.JWTUtil;
+import project.moodipie.config.JWT.JWTUtil;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;
 import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
 import project.moodipie.user.entity.User;
-import project.moodipie.user.handlerexception.RestfullException;
+import project.moodipie.user.handler.exception.RestfullException;
 import project.moodipie.user.repository.UserRepository;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor

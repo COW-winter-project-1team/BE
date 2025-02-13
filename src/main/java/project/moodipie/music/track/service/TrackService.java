@@ -17,11 +17,12 @@ public class TrackService {
     private final TrackRepository trackRepository;
 
 
-    public void save(List<CreateTrackRequest> createTrackRequest) {
+    public List<CreateTrackRequest> save(List<CreateTrackRequest> createTrackRequest) {
         for (CreateTrackRequest trackRequest : createTrackRequest) {
             Track track = trackRequest.toEntity();
             trackRepository.save(track);
         }
+        return createTrackRequest;
     }
 
     public TrackResponse getTrack(String trackId) {

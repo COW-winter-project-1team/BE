@@ -18,7 +18,7 @@ public class CreateUserRequest {
     private String email;
     @Schema(description = "password", example = "1234")
     @NotBlank
-    @Size(max = 8, message = "8자 이상의 영문, 특수문자, 숫자 조합")
+    @Size(min = 8, message = "8자 이상의 영문, 특수문자, 숫자 조합")
     private String password;
 
     public User toEntity(){

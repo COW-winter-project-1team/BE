@@ -1,4 +1,4 @@
-package project.moodipie.config;
+package project.moodipie.config.JWT;
 
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders;
 import io.jsonwebtoken.MalformedJwtException;
@@ -23,11 +23,17 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //필터가 처리 하지 않음.
         String requestURI = request.getRequestURI();
-        if (requestURI.equals("/api/login") || requestURI.equals("/api/signup") || requestURI.equals("/api/logout") || requestURI.startsWith("/api/spotify"))  {
+        if (requestURI.matches("/api/(login|signup|logout)") ||
+                requestURI.matches("/swagger-ui/.*") ||
+                requestURI.matches("/v3/api-docs/.*") ||
+                requestURI.equals("/v3/api-docs.yaml")) {
             filterChain.doFilter(request, response);
             return;
         }
+
+
         try {
             // 헤더 검증
             String authorization = getAuthorization(request, response, filterChain);
@@ -41,7 +47,6 @@ public class JWTFilter extends OncePerRequestFilter {
             setAuthentication(userEmail, token, request);
 
         } catch (Exception e) {
-            //만료 에러
             request.setAttribute("exception", e);
         }
         filterChain.doFilter(request, response);

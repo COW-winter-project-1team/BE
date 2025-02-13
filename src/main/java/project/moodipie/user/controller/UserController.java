@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import project.moodipie.config.JWTUtil;
+import project.moodipie.config.JWT.JWTUtil;
 import project.moodipie.response.ApiRes;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;

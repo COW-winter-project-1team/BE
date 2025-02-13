@@ -30,7 +30,6 @@ public class WebSecurityConfig {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers("/api/login", "/api/signup","/api/logout").permitAll();
                     requests.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll();

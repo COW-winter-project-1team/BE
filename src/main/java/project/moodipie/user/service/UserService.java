@@ -61,7 +61,7 @@ public class UserService {
     }
 
     public UserInfoResponse getUserInfo(String userEmail) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("해당하는 아이디가 없습니다."));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
         return UserInfoResponse.from(user);
     }
     public User findUserByEmail(String email) {

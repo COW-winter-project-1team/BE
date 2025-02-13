@@ -27,6 +27,9 @@ public class UserService {
     private final Long expireMs =  10 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
 
     public CreateUserRequest signup(CreateUserRequest createUserRequest) {
+        if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
+            throw new RestfullException(HttpStatus.CONFLICT, "해당하는 이메일이 존재합니다.");
+        }
         userRepository.save(createUserRequest.toEntity());
         return createUserRequest;
     }

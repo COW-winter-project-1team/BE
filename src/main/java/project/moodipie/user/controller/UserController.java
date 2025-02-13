@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class UserController {
 
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "이름 : 김무디, 프로필 사진 : moody")})
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/users")
     public ResponseEntity<ApiRes<UserInfoResponse>> userPage(
             @Parameter(description = "유저 정보 얻기 위한 이메일")
@@ -43,6 +45,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
     })
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/users")
     public ResponseEntity<ApiRes<UserInfoResponse>> updateUser(
             @AuthenticationPrincipal String userEmail,
@@ -56,6 +59,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "탈퇴 성공"),
     })
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/users")
     public ResponseEntity<ApiRes<User>> deleteUser(@AuthenticationPrincipal String userEmail) {
         jwtUtil.expireByEmail(userEmail); //Redis 써야함
@@ -89,6 +93,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     })
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@AuthenticationPrincipal String userEmail) {
         jwtUtil.expireByEmail(userEmail);
@@ -99,6 +104,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
     })
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/token")
     public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
         String newToken = JWTUtil.refresh(token.split(" ")[1], jwtUtil.getSecretKey(), jwtUtil.getExpireMs());

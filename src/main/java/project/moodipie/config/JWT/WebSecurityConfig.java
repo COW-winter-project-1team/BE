@@ -31,9 +31,9 @@ public class WebSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/api/login", "/api/signup","/api/logout").permitAll();
+                    requests.requestMatchers("/api/login", "/api/signup").permitAll();
                     requests.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll();
-                    requests.requestMatchers("/api/users","/api/token").authenticated();
+                    requests.requestMatchers("/api/users","/api/token", "/api/logout").authenticated();
                     requests.requestMatchers("/api/playlists/**","/api/tracks/**").authenticated();
                     requests.requestMatchers("/api/spotify/api/tracks").authenticated();
 

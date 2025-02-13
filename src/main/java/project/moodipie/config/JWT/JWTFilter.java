@@ -26,7 +26,7 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //필터가 처리 하지 않음.
         String requestURI = request.getRequestURI();
-        if (requestURI.matches("/api/(login|signup|logout)") ||
+        if (requestURI.matches("/api/(login|signup)") ||
                 requestURI.matches("/swagger-ui/.*") ||
                 requestURI.matches("/v3/api-docs/.*") ||
                 requestURI.equals("/v3/api-docs.yaml")) {

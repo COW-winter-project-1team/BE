@@ -49,10 +49,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiRes<?>> handleException(Exception exception) {
-        log.error("handlerException", exception);
-        ApiRes<Object> error = ApiRes.error(ErrorCode.INTERNAL_SERVER_ERROR);
-        return ResponseEntity.status(error.getHttpStatus()).body(error);
-    }
 }

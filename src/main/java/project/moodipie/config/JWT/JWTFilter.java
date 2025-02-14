@@ -32,9 +32,9 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
-        String token = getTokenFromCookie(request);  // 쿠키에서 토큰 추출
-
+        System.out.println(request);
+        String token = getTokenFromRequest(request);  // 쿠키에서 토큰 추출
+        System.out.println(token);
         if (token == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("NULL token");
@@ -75,6 +75,23 @@ public class JWTFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(userEmail, token, List.of(new SimpleGrantedAuthority("USER")));
         authenticated.setDetails(new WebAuthenticationDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticated);
+    }
+
+    private String getTokenFromRequest(HttpServletRequest request) {
+        String tokenFromCookie = getTokenFromCookie(request);
+        if (tokenFromCookie != null) {
+            return tokenFromCookie;
+        }
+        String cookieHeader = request.getHeader("Cookie");
+        if (cookieHeader != null) {
+            String[] cookies = cookieHeader.split(";");
+            for (String cookie : cookies) {
+                if (cookie.trim().startsWith("accessToken=")) {
+                    return cookie.trim().substring("accessToken=".length());
+                }
+            }
+        }
+        return null;
     }
 
     private String getTokenFromCookie(HttpServletRequest request) {

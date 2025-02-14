@@ -1,9 +1,6 @@
-package project.moodipie.config.JWT;
+package project.moodipie.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +12,7 @@ import java.util.Date;
 public class JWTUtil {
     @Value("${jwt.secret}")
     private String secretKey;
-    private final Long expireMs = 10 * 60 * 1000L; // 10분
+    private final Long expireMs = 60 * 60 * 1000L; // 1시간
 
     public static String createJwt(String email, long expiredMs, String secretKey) {
         return Jwts.builder()
@@ -52,13 +49,20 @@ public class JWTUtil {
         return createJwt(email, expiredMs, secretKey);
     }
 
-    public void expire(String token) {
-        System.out.println("Token has been expired: " + token);
-    }
-
     public void expireByEmail(String userEmail) {
         if (userEmail != null) {
 
+        }
+    }
+    public static boolean validate(String token, String secretKey) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | SecurityException  | IllegalArgumentException e) {
+            return false;
         }
     }
 

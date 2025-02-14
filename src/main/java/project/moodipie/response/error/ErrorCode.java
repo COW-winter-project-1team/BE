@@ -13,16 +13,17 @@ public enum ErrorCode {
 
 
     // 토큰 오류 (401)
-    JWT_ERROR(400, "S001","jwt 에러입니다."),
+    JWT_ERROR(401, "S001","jwt 에러입니다."),
     TOKEN_EXPIRED(401, "T001", "토큰이 만료되었습니다."),
     TOKEN_INVALID(401, "T002", "토큰이 유효하지 않습니다."),
     TOKEN_FORMAT_ERROR(401, "T003", "잘못된 형식의 토큰입니다."),
     TOKEN_SIGNATURE_INVALID(401, "T004", "토큰 무결성이 유효하지 않습니다."),
     TOKEN_ERROR(401, "T005", "토큰 관련 에러입니다."),
     NULL_TOKEN(401,"T000","토큰이 비었습니다."),
+
     INTERNAL_SERVER_ERROR(500, "G003", "서버 오류 입니다"),
     //스포티파이 에러 (아무 곡도 못찾았을 때)
-    SPOTIFY_ERROR(400, "S001","스포티파이 에러입니다.");
+    SPOTIFY_ERROR(404, "S001","스포티파이에서 곡을 찾지 못했습니다.");
 
     private final int status;
     private final String divisionCode;

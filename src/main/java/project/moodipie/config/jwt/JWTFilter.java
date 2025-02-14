@@ -1,4 +1,4 @@
-package project.moodipie.config.JWT;
+package project.moodipie.config.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,9 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
-import static project.moodipie.config.JWT.JWTUtil.isExpired;
+import static project.moodipie.config.jwt.JWTUtil.isExpired;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
@@ -26,15 +27,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         if (requestURI.matches("/api/(login|signup)") ||
                 requestURI.matches("/swagger-ui/.*") ||
-                requestURI.matches("/v3/api-docs/.*") ||
-                requestURI.matches("/v3/api-docs") ||
-                requestURI.equals("/v3/api-docs.yaml")) {
+                requestURI.matches("/v3/.*")) {
             filterChain.doFilter(request, response);
             return;
         }
-        System.out.println(request);
         String token = getTokenFromRequest(request);  // 쿠키에서 토큰 추출
-        System.out.println(token);
+
         if (token == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("NULL token");
@@ -78,12 +76,14 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
+        //헤더로 올 때
         String tokenFromCookie = getTokenFromCookie(request);
         if (tokenFromCookie != null) {
             return tokenFromCookie;
         }
         String cookieHeader = request.getHeader("Cookie");
         if (cookieHeader != null) {
+            System.out.println("헤더로 왔을 때"+cookieHeader);
             String[] cookies = cookieHeader.split(";");
             for (String cookie : cookies) {
                 if (cookie.trim().startsWith("accessToken=")) {
@@ -95,7 +95,9 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromCookie(HttpServletRequest request) {
+        //쿠키로 올 때
         if (request.getCookies() != null) {
+            System.out.println("쿠키로 왔을 때"+Arrays.toString(request.getCookies()));
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
                     return cookie.getValue();

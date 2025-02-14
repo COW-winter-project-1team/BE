@@ -1,10 +1,9 @@
-package project.moodipie.config.JWT;
+package project.moodipie.config.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import project.moodipie.response.error.ErrorCode;
 
 import java.util.Date;
 
@@ -62,7 +61,7 @@ public class JWTUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException | IllegalArgumentException| ExpiredJwtException | UnsupportedJwtException e) {
+        } catch (JwtException | SecurityException  | IllegalArgumentException e) {
             return false;
         }
     }

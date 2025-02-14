@@ -1,21 +1,16 @@
 package project.moodipie.config.JWT;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.loadbalancer.Response;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-import project.moodipie.response.error.ErrorCode;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -45,15 +40,17 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write("NULL token");
             return;
         }
+
         if (!JWTUtil.validate(token, secretKey)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid token");
             return;
         }
+
         String userEmail = getEmailFromToken(token);
         if (userEmail == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Malformed token");
+            response.getWriter().write("Email does not exist");
             return;
         }
 

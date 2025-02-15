@@ -1,9 +1,6 @@
-package project.moodipie.config.JWT;
+package project.moodipie.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,12 +33,16 @@ public class JWTUtil {
     }
 
     public static String getEmailFromToken(String token, String secretKey) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.get("email", String.class);
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.get("email", String.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static String refresh(String token, String secretKey,Long expiredMs) {
@@ -52,8 +53,16 @@ public class JWTUtil {
         return createJwt(email, expiredMs, secretKey);
     }
 
-    public void expire(String token) {
-        System.out.println("Token has been expired: " + token);
+    public static boolean validate(String token, String secretKey) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | SecurityException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public void expireByEmail(String userEmail) {

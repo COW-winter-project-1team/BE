@@ -1,4 +1,4 @@
-    package project.moodipie.config.JWT;
+    package project.moodipie.config.jwt;
 
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;

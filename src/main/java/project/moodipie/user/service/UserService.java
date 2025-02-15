@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.moodipie.config.JWT.JWTUtil;
+import project.moodipie.config.jwt.JWTUtil;
 import project.moodipie.user.controller.dto.request.CreateUserRequest;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import project.moodipie.user.controller.dto.request.UserLoginRequest;

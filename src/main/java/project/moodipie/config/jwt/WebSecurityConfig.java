@@ -1,4 +1,4 @@
-package project.moodipie.config.JWT;
+package project.moodipie.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

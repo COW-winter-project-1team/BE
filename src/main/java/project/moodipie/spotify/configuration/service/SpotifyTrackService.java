@@ -6,11 +6,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import feign.FeignException;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import project.moodipie.music.track.controller.dto.request.CreateTrackRequest;
+import project.moodipie.response.ApiRes;
+import project.moodipie.response.error.ErrorCode;
 import project.moodipie.spotify.configuration.client.*;
 import project.moodipie.spotify.configuration.client.Auth.AuthSpotifyClient;
 import project.moodipie.spotify.configuration.client.Auth.SpotifyLoginRequest;
@@ -122,4 +132,6 @@ public class SpotifyTrackService {
         );
         return authSpotifyClient.login(request).getAccessToken();
     }
+
+
 }

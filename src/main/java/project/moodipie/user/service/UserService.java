@@ -40,10 +40,10 @@ public class UserService {
         return getUserInfo(userEmail);
     }
 
-    public User deleteUserByEmail(String userEmail) {
-        User user = findUserByEmail(userEmail); //확인 차
+    public UserInfoResponse deleteUserByEmail(String userEmail) {
+        UserInfoResponse userInfo = getUserInfo(userEmail);//확인 차
         userRepository.deleteByEmail(userEmail);
-        return user;
+        return userInfo;
     }
 
     @Transactional

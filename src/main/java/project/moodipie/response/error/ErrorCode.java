@@ -8,8 +8,9 @@ public enum ErrorCode {
     INVALID_VALUE(400, "G001", "유효하지 않은 값이 존재합니다."),
     INVALID_EMAIL(400, "L001", "해당하는 이메일이 없습니다."),
     INVALID_PASSWORD(400, "L002", "잘못된 비밀번호입니다."),
-    NULL_VALUE(400, "G003", "NULL값이 존재합니다."),
+    NULL_VALUE(400, "G003", "NULL 값이 존재합니다."),
     INVALID_FORMAT(400, "G002", "잘못된 형식입니다."),
+    MISSING_PATH(400, "G003", "경로에 대한 값이 없습니다."),
 
 
     // 토큰 오류 (401)

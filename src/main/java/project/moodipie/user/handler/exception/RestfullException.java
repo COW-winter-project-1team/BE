@@ -13,10 +13,6 @@ public class RestfullException extends RuntimeException {
         this.message = message;
     }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
-
     @Override
     public String getMessage() {
         return message;

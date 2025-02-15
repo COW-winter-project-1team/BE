@@ -8,5 +8,5 @@ import lombok.Getter;
 public class UpdateUserRequest {
     @Schema(description = "수정된 이름", example = "둘리(공백X)")
     @NotBlank
-    public String name;
+    public String username;
 }

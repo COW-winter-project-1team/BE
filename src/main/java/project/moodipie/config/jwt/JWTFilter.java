@@ -15,6 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+
+import static project.moodipie.config.jwt.JWTUtil.isExpired;
+
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
     private final String secretKey;
@@ -54,10 +57,6 @@ public class JWTFilter extends OncePerRequestFilter {
         setAuthentication(userEmail, token, request);
 
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isExpired(String token, String secretKey) {
-
     }
 
     private static @NotNull String getAuthorization(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {

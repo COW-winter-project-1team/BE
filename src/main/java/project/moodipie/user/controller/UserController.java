@@ -63,6 +63,7 @@ public class UserController {
             @AuthenticationPrincipal String userEmail,
             @Valid @RequestBody UpdateUserRequest updateUserRequest) {
         UserInfoResponse userInfoResponse = userService.updateUser(userEmail, updateUserRequest);
+
         ApiRes<UserInfoResponse> response = ApiRes.update(userInfoResponse);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }

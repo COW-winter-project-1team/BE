@@ -31,7 +31,7 @@ public class PlaylistService {
     private final PlaylistTrackRepository playlistTrackRepository;
     private final UserRepository userRepository;
 
-    public CreatePlaylistRequest savePlaylist(String userEmail, CreatePlaylistRequest request) {
+    public PlaylistResponse savePlaylist(String userEmail, CreatePlaylistRequest request) {
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 아이디가 없습니다."));
@@ -45,8 +45,8 @@ public class PlaylistService {
             PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, user, ++playlistTrackId);
             playlistTracks.add(playlistTrack);
         }
-
-        return request;
+        playlistTrackRepository.saveAll(playlistTracks);
+        return PlaylistResponse.from(playlistRepository.getReferenceByUserIdAndPlaylistNumber(user.getId(), playlistNumber));
 
     }
 

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 public class PlaylistResponse {
-    @Schema(description = "플레이 리스트 id", example = "1")
+    @Schema(description = "플레이 리스트 넘버", example = "1")
     private Long playlistNumber;
     @Schema(description = "제목", example = "http://dfdfjiweoif.com")
     private String title;

@@ -24,7 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     @Value("${jwt.secret}")
     private String secretKey;
-    private final Long expireMs =  10 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
+    private final Long expireMs =  60 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
 
     public CreateUserRequest signup(CreateUserRequest createUserRequest) {
         if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
@@ -40,10 +40,10 @@ public class UserService {
         return getUserInfo(userEmail);
     }
 
-    public User deleteUserByEmail(String userEmail) {
-        User user = findUserByEmail(userEmail); //확인 차
+    public UserInfoResponse deleteUserByEmail(String userEmail) {
+        UserInfoResponse userInfo = getUserInfo(userEmail);//확인 차
         userRepository.deleteByEmail(userEmail);
-        return user;
+        return userInfo;
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class UserService {
             throw new RestfullException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
         }
         if (currentuser.isFirstLogin()) {
-            currentuser.setFirstLogin(false);// save 안해도 되나?
+            currentuser.setFirstLogin(false);
             return new UserLoginResponse("첫 로그인 성공",
                     JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
         }

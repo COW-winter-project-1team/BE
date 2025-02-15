@@ -13,10 +13,15 @@ public class UserInfoResponse {
     @Schema(description = "이름", example = "홍길동")
     private String username;
 
+    @Schema(description = "이메일", example = "moodipie@gmail.com")
+    private String email;
+
     public static UserInfoResponse from(User user) {
         return UserInfoResponse.builder()
                 .username(user.getName())
+                .email(user.getEmail())
                 .build();
+
     }
 
 }

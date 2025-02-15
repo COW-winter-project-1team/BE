@@ -16,7 +16,7 @@ public class CreateUserRequest {
     @Email
     @NotBlank
     private String email;
-    @Schema(description = "password", example = "1234")
+    @Schema(description = "password", example = "teamproject1!")
     @NotBlank
     @Size(min = 8, message = "8자 이상의 영문, 특수문자, 숫자 조합")
     private String password;

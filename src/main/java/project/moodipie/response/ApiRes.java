@@ -1,21 +1,39 @@
 package project.moodipie.response;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.response.error.FieldErrors;
 import project.moodipie.response.success.SuccessCode;
+import project.moodipie.swagger.CustomJsonView;
 
 import java.util.List;
 
 @Getter
+@Schema(title = "API 응답")
 public final class ApiRes<T> {
+    @Schema(description = "응답코드", example = "3자리 정수형 ex.200")
+    @JsonView(CustomJsonView.Common.class)
     private final int httpStatus;
+    @Schema(description = "응답 데이터")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonView(CustomJsonView.Hidden.class)
     private final T data;
+    @Schema(description = "응답 메세지", example = "ex.조회에 성공했습니다.")
+    @JsonView(CustomJsonView.Common.class)
     private final String message;
-    private final String divisionCode; // 오류 구분 코드
-    private final List<FieldErrors> errors; // 상세 에러 메시지
+    @Schema(description = "오류 구분 코드", example = "오류시 출력")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonView(CustomJsonView.Hidden.class)
+    private final String divisionCode;
+    @Schema(description = "상세 필드 에러",  example = "오류시 출력")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonView(CustomJsonView.Hidden.class)
+    private final List<FieldErrors> errors;
 
     @Builder
     public ApiRes(int httpStatus, T data, String message, String divisionCode, String reason, List<FieldErrors> errors) {

@@ -41,6 +41,6 @@ public class User {
         this.firstLogin = true;
     }
     public void updateName(UpdateUserRequest updateUserRequest) {
-        this.name = updateUserRequest.getName();
+        this.name = updateUserRequest.getUsername();
     }
 }

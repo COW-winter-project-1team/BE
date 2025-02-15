@@ -33,12 +33,16 @@ public class JWTUtil {
     }
 
     public static String getEmailFromToken(String token, String secretKey) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.get("email", String.class);
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.get("email", String.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static String refresh(String token, String secretKey,Long expiredMs) {
@@ -67,3 +71,4 @@ public class JWTUtil {
     }
 
 }
+

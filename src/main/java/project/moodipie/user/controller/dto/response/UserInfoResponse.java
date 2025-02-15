@@ -16,14 +16,10 @@ public class UserInfoResponse {
     @Schema(description = "이메일", example = "moodipie@gmail.com")
     private String email;
 
-    @Schema(description = "password", example = "teamproject1!")
-    private String password;
-
     public static UserInfoResponse from(User user) {
         return UserInfoResponse.builder()
                 .username(user.getName())
                 .email(user.getEmail())
-                .password(user.getPassword())
                 .build();
 
     }

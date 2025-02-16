@@ -68,7 +68,7 @@ public class PlaylistService {
         PlaylistResponse playlist = PlaylistResponse.from(playlistRepository.getReferenceByUserIdAndPlaylistNumber(user.orElseThrow().getId(), playlistNumber));
         List<TrackResponse> tracks = playlistTrackRepository.findByPlaylistId(playlist.getPlaylistNumber())
                 .stream()
-                .map(playlistTrack -> TrackResponse.from(playlistTrack.getTrack()))
+                .map(playlistTrack -> TrackResponse.fromEachPlaylist(playlistTrack.getTrack(),playlistTrack))
                 .collect(Collectors.toList());
 
         return PlaylistTrackResponse.from(playlist, tracks);

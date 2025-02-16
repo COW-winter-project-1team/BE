@@ -29,14 +29,14 @@ public class PlaylistTrack {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long playlistTrackId;
+    private Long playlistTrackNumber;
 
     @Builder
-    public PlaylistTrack(Playlist playlist, Track track, User user , Long playlistTrackId) {
+    public PlaylistTrack(Playlist playlist, Track track, User user , Long playlistTrackNumber) {
         this.playlist = playlist;
         this.track = track;
         this.user = user;
-        this.playlistTrackId = playlistTrackId;
+        this.playlistTrackNumber = playlistTrackNumber;
     }
 
 }

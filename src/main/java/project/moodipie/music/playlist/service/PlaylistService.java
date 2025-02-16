@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.moodipie.music.playlist.controller.dto.request.CreatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
+import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackEachResponse;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackResponse;
 import project.moodipie.music.playlist.entity.Playlist;
 import project.moodipie.music.playlist.entity.PlaylistTrack;
@@ -40,9 +41,9 @@ public class PlaylistService {
         playlistRepository.save(playlist);
         List<Track> tracks = trackRepository.findAllById(request.getTrackIds());
         List<PlaylistTrack> playlistTracks = new ArrayList<>();
-        long playlistTrackId = 0L;
+        long playlistTrackNumber = 0L;
         for (Track track : tracks) {
-            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, user, ++playlistTrackId);
+            PlaylistTrack playlistTrack = new PlaylistTrack(playlist, track, user, ++playlistTrackNumber);
             playlistTracks.add(playlistTrack);
         }
         playlistTrackRepository.saveAll(playlistTracks);
@@ -80,14 +81,17 @@ public class PlaylistService {
         return updatePlaylistRequest;
     }
 
-    public List<PlaylistTrack> deletePlaylistTrack(String userEmail, Long playlistNumber, Long PlaylistTrackId) {
+    public PlaylistTrackEachResponse deletePlaylistTrack(String userEmail, Long playlistNumber, Long playlistTrackNumber) {
         Optional<User> user = userRepository.findByEmail(userEmail);
         List<PlaylistTrack> playlistTracks = playlistTrackRepository.findByPlaylistUserIdAndPlaylistPlaylistNumber(user.orElseThrow().getId(), playlistNumber);
+        PlaylistTrack playlistDeleteTrack = null;
         for (PlaylistTrack playlistTrack : playlistTracks) {
-            if (playlistTrack.getPlaylistTrackId().equals(PlaylistTrackId))
-                playlistTrackRepository.deleteByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(PlaylistTrackId, playlistNumber, user.orElseThrow().getId());
+            if (playlistTrack.getPlaylistTrackNumber().equals(playlistTrackNumber)) {
+                playlistDeleteTrack = playlistTrackRepository.findByPlaylistTrackNumberAndPlaylist_PlaylistNumberAndUser_Id(playlistTrackNumber, playlistNumber, user.orElseThrow().getId());
+                playlistTrackRepository.deleteByPlaylistTrackNumberAndPlaylist_PlaylistNumberAndUser_Id(playlistTrackNumber, playlistNumber, user.orElseThrow().getId());
+            }
         }
-        return playlistTracks;
+        return PlaylistTrackEachResponse.from(playlistDeleteTrack);
     }
 
     private Long getNextPlaylistNumber(Long userId) {

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import project.moodipie.music.playlist.controller.dto.request.CreatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.request.UpdatePlaylistRequest;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistResponse;
+import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackEachResponse;
 import project.moodipie.music.playlist.controller.dto.response.PlaylistTrackResponse;
-import project.moodipie.music.playlist.entity.PlaylistTrack;
 import project.moodipie.music.playlist.service.PlaylistService;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
@@ -102,15 +102,15 @@ public class PlaylistController {
                     @ApiExceptionExplanation(name = "삭제 실패 - playlistNumber or trackId NULL", description = "잘못된 playlistNumber 나 TrackId로 삭제를 시도하여 플레이리스트 삭제에 실패했습니다.", value = ErrorCode.class, constant = "NULL_VALUE"),
             }
     )
-    @DeleteMapping("/{playlistNumber}/tracks/{PlaylistTrackId}")
-    public ResponseEntity<ApiRes<List<PlaylistTrack>>> deletePlaylistTrack(
+    @DeleteMapping("/{playlistNumber}/tracks/{playlistTrackNumber}")
+    public ResponseEntity<ApiRes<PlaylistTrackEachResponse>> deletePlaylistTrack(
             @AuthenticationPrincipal String userEmail,
             @Parameter(description = "선택할 플레이리스트 아이디", required = true)
             @PathVariable("playlistNumber") Long playlistNumber,
             @Parameter(description = "삭제할 트랙 번호", required = true)
-            @PathVariable("PlaylistTrackId") Long PlaylistTrackId) {
-        List<PlaylistTrack> playlistTracks = playlistService.deletePlaylistTrack(userEmail, playlistNumber, PlaylistTrackId);
-        ApiRes<List<PlaylistTrack>> response = ApiRes.delete(playlistTracks);
+            @PathVariable("playlistTrackNumber") Long playlistTrackNumber) {
+        PlaylistTrackEachResponse playlistTracks = playlistService.deletePlaylistTrack(userEmail, playlistNumber, playlistTrackNumber);
+        ApiRes<PlaylistTrackEachResponse> response = ApiRes.delete(playlistTracks);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 

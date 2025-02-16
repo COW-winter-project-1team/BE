@@ -14,7 +14,7 @@ public interface PlaylistTrackRepository extends JpaRepository<PlaylistTrack, Lo
 
     List<PlaylistTrack> findByPlaylistUserIdAndPlaylistPlaylistNumber(Long userId, Long playlistNumber);
 
-    void deleteByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(Long playlistTrackId, Long playlistNumber, Long userId);
-    void findByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(Long playlistTrackId, Long playlistNumber, Long userId);
+    void deleteByPlaylistTrackNumberAndPlaylist_PlaylistNumberAndUser_Id(Long playlistTrackNumber, Long playlistNumber, Long userId);
+    PlaylistTrack findByPlaylistTrackNumberAndPlaylist_PlaylistNumberAndUser_Id(Long playlistTrackNumber, Long playlistNumber, Long userId);
 
 }

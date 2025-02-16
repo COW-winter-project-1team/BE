@@ -32,7 +32,6 @@ public final class ApiRes<T> {
     private final String divisionCode;
     @Schema(description = "상세 필드 에러",  example = "오류시 출력")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonView(CustomJsonView.Hidden.class)
     private final List<FieldErrors> errors;
 
     @Builder

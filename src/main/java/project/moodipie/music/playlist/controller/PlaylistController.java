@@ -48,7 +48,7 @@ public class PlaylistController {
     @PostMapping
     public ResponseEntity<ApiRes<PlaylistResponse>> savePlaylist(
             @AuthenticationPrincipal String userEmail,
-            @Valid @RequestBody CreatePlaylistRequest request) {
+            @RequestBody @Valid  CreatePlaylistRequest request) {
         PlaylistResponse createPlaylistRequest = playlistService.savePlaylist(userEmail, request);
         ApiRes<PlaylistResponse> response = ApiRes.created(createPlaylistRequest);
         return ResponseEntity.status(response.getHttpStatus()).body(response);

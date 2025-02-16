@@ -1,6 +1,5 @@
 package project.moodipie.config.exception;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.response.error.FieldErrors;
-import project.moodipie.swagger.CustomJsonView;
 import project.moodipie.user.handler.exception.RestfullException;
 
 import java.util.HashMap;
@@ -30,7 +28,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ApiResponse(responseCode = "400", description = "BAD_REQUEST", content = @Content(schema = @Schema(implementation = ApiRes.class)))
-    @JsonView(CustomJsonView.Hidden.class)
     protected ResponseEntity<ApiRes<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
         ApiRes<Object> error = ApiRes.error(ErrorCode.INVALID_VALUE, FieldErrors.of(bindingResult));

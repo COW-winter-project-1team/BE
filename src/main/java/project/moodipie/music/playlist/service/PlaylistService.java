@@ -80,12 +80,12 @@ public class PlaylistService {
         return updatePlaylistRequest;
     }
 
-    public List<PlaylistTrack> deletePlaylistTrack(String userEmail, Long playlistNumber, Long trackId) {
+    public List<PlaylistTrack> deletePlaylistTrack(String userEmail, Long playlistNumber, Long PlaylistTrackId) {
         Optional<User> user = userRepository.findByEmail(userEmail);
         List<PlaylistTrack> playlistTracks = playlistTrackRepository.findByPlaylistUserIdAndPlaylistPlaylistNumber(user.orElseThrow().getId(), playlistNumber);
         for (PlaylistTrack playlistTrack : playlistTracks) {
-            if (playlistTrack.getPlaylistTrackId().equals(trackId))
-                playlistTrackRepository.deleteByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(trackId, playlistNumber, user.orElseThrow().getId());
+            if (playlistTrack.getPlaylistTrackId().equals(PlaylistTrackId))
+                playlistTrackRepository.deleteByPlaylistTrackIdAndPlaylist_PlaylistNumberAndUser_Id(PlaylistTrackId, playlistNumber, user.orElseThrow().getId());
         }
         return playlistTracks;
     }

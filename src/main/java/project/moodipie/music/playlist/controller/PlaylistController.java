@@ -79,8 +79,12 @@ public class PlaylistController {
     })
     @ApiResponseExplanations(
             errors = {
-                    @ApiExceptionExplanation(name = "수정 실패 - playlistNumber NULL", description = "잘못된 playlistNumber로 수정을 시도하여 플레이리스트 수정에 실패했습니다.", value = ErrorCode.class, constant = "NULL_VALUE"),
-                    @ApiExceptionExplanation(name = "수정 실패 - 필드 에러", description = "필드 조건에 맞지 않아 플레이리스트 수정에 실패했습니다.", value = ErrorCode.class, constant = "INVALID_FORMAT")
+                    @ApiExceptionExplanation(name = "수정 실패 - playlistNumber NULL",
+                            description = "잘못된 playlistNumber로 수정을 시도하여 플레이리스트 수정에 실패했습니다.",
+                            value = ErrorCode.class, constant = "NULL_VALUE"),
+                    @ApiExceptionExplanation(name = "수정 실패 - 필드 에러",
+                            description = "필드 조건에 맞지 않아 플레이리스트 수정에 실패했습니다.",
+                            value = ErrorCode.class, constant = "INVALID_FORMAT")
             }
     )
     @PutMapping("/{playlistNumber}")

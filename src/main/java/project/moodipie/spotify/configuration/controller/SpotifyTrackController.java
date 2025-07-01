@@ -26,7 +26,7 @@ import project.moodipie.swagger.ApiResponseExplanations;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/spotify/api")
+@RequestMapping("/spotify/api")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 @Tag(name = "스포티파이 api", description = "스포티파이 외부 api")

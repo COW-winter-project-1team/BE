@@ -61,7 +61,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private boolean isExcludedUrl(String requestURI) {
-        return requestURI.matches("/api/(login|signup)") ||
+        return requestURI.matches("/(login|signup)") ||
                 requestURI.matches("/swagger-ui/.*") ||
                 requestURI.matches("/v3/.*");
     }

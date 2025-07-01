@@ -25,7 +25,6 @@ import project.moodipie.user.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 @Tag(name = "회원", description = "회원관리 CRUD")
 public class UserController {
     private final UserService userService;

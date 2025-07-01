@@ -21,7 +21,7 @@ import project.moodipie.swagger.ApiResponseExplanations;
 
 @Tag(name = "음악 CRUD", description = "스포티파이에서 가져온 음악정보")
 @RestController
-@RequestMapping("/api/tracks")
+@RequestMapping("/tracks")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class TrackController {

@@ -4,28 +4,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   config:
-    import: spotify.yml
+    import:
+      - classpath:spotify.yml
   profiles:
-    include: jwt
-  jpa:
-    open-in-view: true
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        highlight_sql: true
-  datasource:
-    url: jdbc:tc:mysql:8.0.36://cow/mydatabase?
-    username: myuser
-    password: secret
-    driver-class-name: com.mysql.cj.jdbc.Driver
-logging:
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
+    active: dev
 

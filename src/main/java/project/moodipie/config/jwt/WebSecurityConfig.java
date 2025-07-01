@@ -24,6 +24,7 @@ public class WebSecurityConfig {
 
     @Value("${jwt.secret}")
     private String secretKey;
+    private final CorsProperties corsProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -31,10 +32,10 @@ public class WebSecurityConfig {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173")); // 프론트엔드 도메인
+                    config.setAllowedOrigins(corsProperties.getAllowedOrigins());
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
-                    config.setAllowCredentials(true); // 쿠키 허용
+                    config.setAllowCredentials(true);
                     return config;
                 }))
                 .httpBasic(AbstractHttpConfigurer::disable)

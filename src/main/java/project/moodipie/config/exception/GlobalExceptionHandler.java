@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.response.error.FieldErrors;
@@ -81,8 +82,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ApiRes<?>> handleNoSuchElementException(NoSuchElementException exception) {
         List<FieldErrors> errors = FieldErrors.of("element", "", exception.getMessage());
+        ApiRes<Object> error = ApiRes.error(ErrorCode.USER_NOT_FOUND, errors);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ApiResponse(responseCode = "404", description = "NOT_FOUND", content = @Content(schema = @Schema(implementation = ApiRes.class)))
+    @ExceptionHandler(NoResourceFoundException.class)
+    protected ResponseEntity<ApiRes<?>> handleNoResourceFoundException(NoResourceFoundException exception) {
+        List<FieldErrors> errors = FieldErrors.of("resource", "", exception.getMessage());
         ApiRes<Object> error = ApiRes.error(ErrorCode.RESOURCE_NOT_FOUND, errors);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ApiRes<?>> handleException(Exception exception) {
+        log.error("Unexpected error occurred", exception);
+        List<FieldErrors> errors = FieldErrors.of("server", "", "서버 내부 오류가 발생했습니다");
+        ApiRes<Object> error = ApiRes.error(ErrorCode.INTERNAL_SERVER_ERROR, errors);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
 }

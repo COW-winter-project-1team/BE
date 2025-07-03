@@ -8,4 +8,10 @@ spring:
       - classpath:spotify.yml
   profiles:
     active: dev
-
+server:
+  error:
+    include-exception: false
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
+    path: /error

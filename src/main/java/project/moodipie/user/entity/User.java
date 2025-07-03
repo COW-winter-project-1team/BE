@@ -1,5 +1,6 @@
 package project.moodipie.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class User {
 
     private String name;
     private String email;
+    @JsonIgnore
     private String password;
     private boolean firstLogin;
 

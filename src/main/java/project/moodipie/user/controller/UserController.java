@@ -24,6 +24,8 @@ import project.moodipie.user.controller.dto.response.UserInfoResponse;
 import project.moodipie.user.controller.dto.response.UserLoginResponse;
 import project.moodipie.user.service.UserService;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "회원", description = "회원관리 CRUD")
@@ -104,7 +106,7 @@ public class UserController {
             }
     )
     @PostMapping("/signup")
-    public ResponseEntity<ApiRes<CreateUserRequest>> signup(@Valid @RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<ApiRes<CreateUserRequest>> signup(@RequestBody @Valid CreateUserRequest createUserRequest) {
         CreateUserRequest signup = userService.signup(createUserRequest);
         ApiRes<CreateUserRequest> response = ApiRes.created(signup);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -116,8 +118,9 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "인증 실패")
     })
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
-        return ResponseEntity.ok(userService.login(userLoginRequest));
+    public ResponseEntity<ApiRes<UserLoginResponse>> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+        ApiRes<UserLoginResponse> response = ApiRes.ok(userService.login(userLoginRequest));
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
@@ -125,6 +128,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
             @ApiResponse(responseCode = "401", description = "인증 실패")
     })
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/logout")
     public ResponseEntity<ApiRes<String>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.logout(userDetails.getEmail());
@@ -139,10 +143,18 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "만료된 Refresh Token")
     })
     @PostMapping("/token")
-    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization-refresh") String refreshHeader) {
+    public ResponseEntity<ApiRes<Map<String, String>>> refreshToken(@RequestHeader("Authorization-refresh") String refreshHeader) {
         String token = extractBearerToken(refreshHeader);
         String newToken = jwtUtil.refresh(token);
-        return ResponseEntity.ok(newToken);
+
+        Map<String, String> tokenData = Map.of(
+                "token", newToken,
+                "type", "Bearer",
+                "expiresIn", String.valueOf(jwtUtil.getExpireMs() / 1000) // 초 단위
+        );
+
+        ApiRes<Map<String, String>> response = ApiRes.ok(tokenData);
+        return ResponseEntity.ok(response);
     }
     private String extractBearerToken(String header) {
         return header != null && header.startsWith("Bearer ") ? header.split(" ")[1] : null;

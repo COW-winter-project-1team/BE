@@ -41,7 +41,8 @@ public class WebSecurityConfig {
                     requests.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll();
                     requests.requestMatchers("/users", "/token", "/logout").authenticated();
                     requests.requestMatchers("/playlists/**", "/tracks/**").authenticated();
-                    requests.requestMatchers("/spotify/api/tracks").authenticated();
+                    requests.requestMatchers("/spotify/api/tracks").authenticated()
+                            .anyRequest().permitAll();
                 })
                 .sessionManagement(
                         sessionManagement ->

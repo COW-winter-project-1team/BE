@@ -21,7 +21,6 @@ import project.moodipie.response.error.FieldErrors;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,9 +30,14 @@ public class JWTFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final Set<String> EXCLUDED_PATHS = Set.of(
-            "/login", "/signup", "/error",
-            "/swagger-ui", "/v3/api-docs", "/api-docs"
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/login", "/signup",
+            "/swagger-ui"
+    );
+    private static final List<String> AUTHENTICATED_PATHS = List.of(
+            "^/users$", "^/token$", "^/logout$",
+            "^/playlists(/.*)?$", "^/tracks(/.*)?$",
+            "^/spotify/api/tracks$"
     );
 
     @Override
@@ -41,9 +45,8 @@ public class JWTFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String requestURI = request.getRequestURI();
-        log.debug("Incoming request: {} {}", request.getMethod(), requestURI);
 
-        if (isExcludedUrl(requestURI)) {
+        if (isExcludedUrl(requestURI) || !requiresAuthentication(requestURI)) {
             chain.doFilter(request, response);
             return;
         }
@@ -99,6 +102,9 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private boolean isExcludedUrl(String uri) {
         return EXCLUDED_PATHS.stream().anyMatch(uri::startsWith);
+    }
+    private boolean requiresAuthentication(String uri) {
+        return AUTHENTICATED_PATHS.stream().anyMatch(pattern -> uri.matches(pattern));
     }
 
     private void reject(HttpServletResponse response, String field, String value, String reason) throws IOException {

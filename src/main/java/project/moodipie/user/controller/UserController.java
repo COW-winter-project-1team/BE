@@ -32,7 +32,10 @@ public class UserController {
     private final JWTUtil jwtUtil;
 
     @Operation(summary = "마이페이지 조회", description = "내 정보를 조회합니다.")
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "이름 : 김무디, 프로필 사진 : moody")})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")})
     @ApiResponseExplanations(
             errors = {
                     @ApiExceptionExplanation(name = "조회 실패 - userEmail 오류", description = "userEmail 값이 Null 이라서 플레이리스트 조회에 실패했습니다.", value = ErrorCode.class, constant = "NULL_VALUE"),
@@ -51,6 +54,8 @@ public class UserController {
     @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
     })
     @ApiResponseExplanations(
             errors = {
@@ -70,6 +75,8 @@ public class UserController {
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "탈퇴 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
     @ApiResponseExplanations(
             errors = {
@@ -88,6 +95,8 @@ public class UserController {
     @Operation(summary = "회원가입", description = "회원에 가입합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @ApiResponse(responseCode = "409", description = "이미 존재하는 이메일")
     })
     @ApiResponseExplanations(
             errors = {
@@ -104,6 +113,7 @@ public class UserController {
     @Operation(summary = "로그인", description = "내 정보로 로그인합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
     })
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
@@ -113,6 +123,7 @@ public class UserController {
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
     })
     @PostMapping("/logout")
     public ResponseEntity<ApiRes<String>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -124,8 +135,9 @@ public class UserController {
     @Operation(summary = "토큰 갱신", description = "만료될 토큰을 갱신합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
+            @ApiResponse(responseCode = "401", description = "유효하지 않은 Refresh Token"),
+            @ApiResponse(responseCode = "403", description = "만료된 Refresh Token")
     })
-    @SecurityRequirement(name = "Authorization")
     @PostMapping("/token")
     public ResponseEntity<String> refreshToken(@RequestHeader("Authorization-refresh") String refreshHeader) {
         String token = extractBearerToken(refreshHeader);

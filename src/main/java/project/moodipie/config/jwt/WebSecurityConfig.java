@@ -11,7 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import project.moodipie.user.service.UserService;
 
 import java.util.List;
 
@@ -19,11 +18,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
-    private final UserService userService;
-
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final JWTUtil jwtUtil;
     private final CorsProperties corsProperties;
 
     @Bean
@@ -51,7 +46,7 @@ public class WebSecurityConfig {
                         sessionManagement ->
                                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JWTFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

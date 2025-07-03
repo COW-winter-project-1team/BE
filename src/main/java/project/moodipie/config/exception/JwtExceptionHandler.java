@@ -16,21 +16,21 @@ import project.moodipie.response.error.ErrorCode;
 public class JwtExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     protected ResponseEntity<ApiRes<?>> handleExpiredJwtException(ExpiredJwtException exception) {
-        log.error("handleExpiredJwtException", exception);
+        log.error("유효 기간 만료", exception);
         ApiRes<Object> error = ApiRes.error(ErrorCode.TOKEN_EXPIRED);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     protected ResponseEntity<ApiRes<?>> handleMalformedJwtException(MalformedJwtException exception) {
-        log.error("handleMalformedJwtException", exception);
+        log.error("JWT의 형식이 잘못되었거나 유효하지 않음", exception);
         ApiRes<Object> error = ApiRes.error(ErrorCode.TOKEN_FORMAT_ERROR);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
     }
 
     @ExceptionHandler(SignatureException.class)
     protected ResponseEntity<ApiRes<?>> handleSignatureException(SignatureException exception) {
-        log.error("handleSignatureException", exception);
+        log.error("다른 secretKey로 만들어졌음", exception);
         ApiRes<Object> error = ApiRes.error(ErrorCode.TOKEN_SIGNATURE_INVALID);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
     }

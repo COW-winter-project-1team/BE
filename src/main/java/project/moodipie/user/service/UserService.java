@@ -22,9 +22,7 @@ import project.moodipie.user.repository.UserRepository;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-    @Value("${jwt.secret}")
-    private String secretKey;
-    private final Long expireMs =  60 * 60 * 1000L;     //60 * 60 * 1000L은 한 시간입니다.
+    private final JWTUtil jwtUtil;
 
     public CreateUserRequest signup(CreateUserRequest createUserRequest) {
         if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
@@ -55,17 +53,36 @@ public class UserService {
         if (currentuser.isFirstLogin()) {
             currentuser.setFirstLogin(false);
             return new UserLoginResponse("첫 로그인 성공",
-                    JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
+                    jwtUtil.createJwt(userLoginRequest.getEmail()));
         }
         return new UserLoginResponse("로그인 성공",
-                JWTUtil.createJwt(userLoginRequest.getEmail(), expireMs, secretKey));
+                jwtUtil.createJwt(userLoginRequest.getEmail()));
     }
 
     public UserInfoResponse getUserInfo(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
         return UserInfoResponse.from(user);
     }
+
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new RestfullException(HttpStatus.NOT_FOUND,"해당하는 아이디가 없습니다."));
+    }
+
+    public String refreshToken(String refreshToken) {
+        if (!jwtUtil.validate(refreshToken)) {
+            throw new RestfullException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+        }
+        if (jwtUtil.isExpired(refreshToken)) {
+            throw new RestfullException(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다.");
+        }
+        String email = jwtUtil.getEmailFromToken(refreshToken);
+        return jwtUtil.createJwt(email);
+    }
+
+    public void logout(String userEmail) {
+        if (!userRepository.existsByEmail(userEmail)) {
+            throw new RestfullException(HttpStatus.NOT_FOUND, "해당하는 아이디가 없습니다.");
+        }
+        jwtUtil.expireByEmail(userEmail); // Redis에 블랙리스트 추가 로직 필요
     }
 }

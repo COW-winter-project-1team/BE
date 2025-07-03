@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
-    private final String secretKey;
+    private final JWTUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,17 +40,17 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!JWTUtil.validate(token, secretKey)) {
+        if (!jwtUtil.validate(token)) {
             sendUnauthorizedResponse(response, "Invalid token");
             return;
         }
 
-        if (JWTUtil.isExpired(token, secretKey)) {
+        if (jwtUtil.isExpired(token)) {
             sendUnauthorizedResponse(response, "Token expired");
             return;
         }
 
-        String userEmail = JWTUtil.getEmailFromToken(token, secretKey);
+        String userEmail = jwtUtil.getEmailFromToken(token);
         if (userEmail == null) {
             sendUnauthorizedResponse(response, "Email does not exist");
             return;

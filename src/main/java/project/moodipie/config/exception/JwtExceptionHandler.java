@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
+import project.moodipie.response.error.FieldErrors;
+
+import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
@@ -17,7 +20,8 @@ public class JwtExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     protected ResponseEntity<ApiRes<?>> handleExpiredJwtException(ExpiredJwtException exception) {
         log.error("유효 기간 만료", exception);
-        ApiRes<Object> error = ApiRes.error(ErrorCode.TOKEN_EXPIRED);
+        List<FieldErrors> errors = FieldErrors.of("token", "", exception.getMessage());
+        ApiRes<Object> error = ApiRes.error(ErrorCode.TOKEN_EXPIRED, errors);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
     }
 

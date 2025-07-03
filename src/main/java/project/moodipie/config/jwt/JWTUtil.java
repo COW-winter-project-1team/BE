@@ -54,11 +54,11 @@ public class JWTUtil {
 
     public String refresh(String token) {
         if (isExpired(token)) {
-            throw new JwtException("만료된 토큰으로는 갱신할 수 없습니다.");
+            throw new ExpiredJwtException(null, null, "Token has expired");
         }
         String email = getEmailFromToken(token);
         if (email == null) {
-            throw new JwtException("유효하지 않은 토큰입니다.");
+        throw new JwtException("Email not found in token");
         }
         return createJwt(email);
     }
@@ -74,7 +74,17 @@ public class JWTUtil {
         } catch (ExpiredJwtException e) {
             log.debug("Token expired but claims extracted: {}", e.getClaims().getSubject());
             return Optional.of(e.getClaims());
-        } catch (JwtException e) {
+
+        } catch (MalformedJwtException e) {
+            log.debug("JWT strings must contain exactly 2 period characters: {}", e.getMessage());
+            return Optional.empty();
+        } catch (UnsupportedJwtException e) {
+            log.debug("JWT token is unsupported: {}", e.getMessage());
+            return Optional.empty();
+        } catch (SignatureException e) {
+            log.debug("JWT signature does not match locally computed signature: {}", e.getMessage());
+            return Optional.empty();
+        }catch (JwtException e) {
             log.error("JWT parsing failed", e);
             return Optional.empty();
         }

@@ -1,5 +1,6 @@
 package project.moodipie.config.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,91 +12,101 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-import project.moodipie.config.security.UserDetailsImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import project.moodipie.config.security.UserDetailsImpl;
+import project.moodipie.response.ApiRes;
+import project.moodipie.response.error.ErrorCode;
+import project.moodipie.response.error.FieldErrors;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final Set<String> EXCLUDED_PATHS = Set.of(
+            "/login", "/signup", "/error",
+            "/swagger-ui", "/v3/api-docs", "/api-docs"
+    );
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestURI = request.getRequestURI();
-        log.debug("Processing request: {} {}", request.getMethod(), requestURI);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+
+        final String requestURI = request.getRequestURI();
+        log.debug("Incoming request: {} {}", request.getMethod(), requestURI);
 
         if (isExcludedUrl(requestURI)) {
-            log.debug("Skipping JWT filter for excluded URL: {}", requestURI);
-            filterChain.doFilter(request, response);
+            chain.doFilter(request, response);
             return;
         }
 
-        String token = extractTokenFromHeader(request);
+        final String token = extractToken(request);
         if (token == null) {
-            log.warn("Authorization header missing or malformed for URI: {}", request.getRequestURI());
-            sendUnauthorizedResponse(response, "NULL token");
+            reject(response, "Authorization", "", "토큰이 없습니다.");
             return;
         }
 
         if (!jwtUtil.validate(token)) {
-            sendUnauthorizedResponse(response, "Invalid token");
+            reject(response, "Authorization", token, "유효하지 않은 토큰입니다.");
             return;
         }
 
         if (jwtUtil.isExpired(token)) {
-            sendUnauthorizedResponse(response, "Token expired");
+            reject(response, "Authorization", token, "토큰이 만료되었습니다.");
             return;
         }
 
-        String userEmail = jwtUtil.getEmailFromToken(token);
-        if (userEmail == null) {
-            sendUnauthorizedResponse(response, "Email does not exist");
+        final String email = jwtUtil.getEmailFromToken(token);
+        if (email == null) {
+            reject(response, "Authorization", token, "토큰에서 이메일을 추출할 수 없습니다.");
             return;
         }
 
-        setAuthentication(userEmail, request);
-        log.debug("Authentication set for user: {}", userEmail);
-
-        filterChain.doFilter(request, response);
-    }
-
-    private boolean isExcludedUrl(String requestURI) {
-        return requestURI.matches("/(login|signup)") ||
-                requestURI.matches("/swagger-ui/.*") ||
-                requestURI.matches("/v3/.*");
-    }
-
-    private String extractTokenFromHeader(HttpServletRequest request) {
-        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return null;
+        try {
+            setAuthentication(email, request);
+        } catch (UsernameNotFoundException e) {
+            reject(response, "email", email, "존재하지 않는 사용자입니다.");
+            return;
         }
 
-        String token = authorization.substring(7);
-        return token.trim().isEmpty() ? null : token;
+        chain.doFilter(request, response);
     }
 
-    private void setAuthentication(String userEmail, HttpServletRequest request) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(userEmail);
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,   //Crendentials
-                        userDetails.getAuthorities()
-                );
-        authentication.setDetails(new WebAuthenticationDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    private void setAuthentication(String email, HttpServletRequest request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities()
+        );
+        auth.setDetails(new WebAuthenticationDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        log.debug("SecurityContext 인증 설정 완료: {}", email);
     }
 
-    private void sendUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
+    private String extractToken(HttpServletRequest request) {
+        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header == null || !header.startsWith("Bearer ")) return null;
+        final String token = header.substring(7).trim();
+        return token.isEmpty() ? null : token;
+    }
+
+    private boolean isExcludedUrl(String uri) {
+        return EXCLUDED_PATHS.stream().anyMatch(uri::startsWith);
+    }
+
+    private void reject(HttpServletResponse response, String field, String value, String reason) throws IOException {
+        List<FieldErrors> error = FieldErrors.of(field, value, reason);
+        ApiRes<Void> body = ApiRes.error(ErrorCode.UNAUTHORIZED, error);
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(message);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(body));
     }
-
-
 }

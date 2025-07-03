@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.response.error.FieldErrors;
-import project.moodipie.user.handler.exception.RestfullException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,14 +63,6 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ApiRes<?>> handlerAccessDeniedException(AccessDeniedException exception) {
         ApiRes<Object> error = ApiRes.error(ErrorCode.MISSING_PATH);
         return ResponseEntity.status(error.getHttpStatus()).body(error);
-    }
-
-    @ExceptionHandler(RestfullException.class)
-    protected ResponseEntity<Map<String, Object>> handleRestfullException(RestfullException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", ex.getMessage());
-        response.put("status", ex.getStatus().value());
-        return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
 }

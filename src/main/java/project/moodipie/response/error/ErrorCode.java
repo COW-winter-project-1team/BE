@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum ErrorCode {
     // 클라이언트 오류 (400)
     INVALID_VALUE(400, "G001", "유효하지 않은 값이 존재합니다."),
-    CONFLICT_EMAIL(409, "C001", "해당하는 이메일이 존재합니다."),
-    INVALID_EMAIL(404, "L001","사용자가 존재하지 않습니다." ),
+    CONFLICT(409, "C001", "해당하는 이메일이 존재합니다."),
+    RESOURCE_NOT_FOUND(404, "L001","사용자가 존재하지 않습니다." ),
     NULL_VALUE(400, "G003", "NULL 값이 존재합니다."),
     INVALID_FORMAT(400, "G002", "잘못된 형식입니다."),
     MISSING_PATH(400, "G003", "경로에 대한 값이 없습니다."),

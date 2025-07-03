@@ -1,6 +1,5 @@
 package project.moodipie.user.service;
 
-import com.github.dockerjava.api.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class UserService {
 
     public CreateUserRequest signup(CreateUserRequest createUserRequest) {
         if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
-            throw new ConflictException("이미 존재하는 이메일입니다.");
+            throw new IllegalStateException("이미 존재하는 이메일입니다.");
         }
         userRepository.save(createUserRequest.toEntity());
         return createUserRequest;

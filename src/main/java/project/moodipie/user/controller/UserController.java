@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.moodipie.config.jwt.JWTUtil;
+import project.moodipie.config.security.UserDetailsImpl;
 import project.moodipie.response.ApiRes;
 import project.moodipie.response.error.ErrorCode;
 import project.moodipie.swagger.ApiExceptionExplanation;
@@ -39,10 +40,10 @@ public class UserController {
     )
     @SecurityRequirement(name = "Authorization")
     @GetMapping("/users")
-    public ResponseEntity<ApiRes<UserInfoResponse>> userPage(
+    public ResponseEntity<ApiRes<UserInfoResponse>> getUserInfo(
             @Parameter(description = "유저 정보 얻기 위한 이메일")
-            @AuthenticationPrincipal String userEmail) {
-        UserInfoResponse userInfo = userService.getUserInfo(userEmail);
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserInfoResponse userInfo = userService.getUserInfo(userDetails.getEmail());
         ApiRes<UserInfoResponse> response = ApiRes.ok(userInfo);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
@@ -59,9 +60,9 @@ public class UserController {
     @SecurityRequirement(name = "Authorization")
     @PutMapping("/users")
     public ResponseEntity<ApiRes<UserInfoResponse>> updateUser(
-            @AuthenticationPrincipal String userEmail,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody UpdateUserRequest updateUserRequest) {
-        UserInfoResponse userInfoResponse = userService.updateUser(userEmail, updateUserRequest);
+        UserInfoResponse userInfoResponse = userService.updateUser(userDetails.getEmail(), updateUserRequest);
         ApiRes<UserInfoResponse> response = ApiRes.update(userInfoResponse);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
@@ -77,9 +78,9 @@ public class UserController {
     )
     @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/users")
-    public ResponseEntity<ApiRes<UserInfoResponse>> deleteUser(@AuthenticationPrincipal String userEmail) {
-        jwtUtil.expireByEmail(userEmail); //Redis 써야함
-        UserInfoResponse user = userService.deleteUserByEmail(userEmail);
+    public ResponseEntity<ApiRes<UserInfoResponse>> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // userDetails에서 이메일을 가져와서 해당 유저를 삭제
+        UserInfoResponse user = userService.deleteUserByEmail(userDetails.getEmail());
         ApiRes<UserInfoResponse> response = ApiRes.delete(user);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
@@ -113,11 +114,11 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     })
-    @SecurityRequirement(name = "Authorization")
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@AuthenticationPrincipal String userEmail) {
-        jwtUtil.expireByEmail(userEmail);
-        return ResponseEntity.ok("로그아웃");
+    public ResponseEntity<ApiRes<String>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.logout(userDetails.getEmail());
+        ApiRes<String> response = ApiRes.ok("로그아웃 성공");
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "토큰 갱신", description = "만료될 토큰을 갱신합니다.")
@@ -126,8 +127,12 @@ public class UserController {
     })
     @SecurityRequirement(name = "Authorization")
     @PostMapping("/token")
-    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
-        String newToken = JWTUtil.refresh(token.split(" ")[1], jwtUtil.getSecretKey(), jwtUtil.getExpireMs());
+    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization-refresh") String refreshHeader) {
+        String token = extractBearerToken(refreshHeader);
+        String newToken = jwtUtil.refresh(token);
         return ResponseEntity.ok(newToken);
+    }
+    private String extractBearerToken(String header) {
+        return header != null && header.startsWith("Bearer ") ? header.split(" ")[1] : null;
     }
 }

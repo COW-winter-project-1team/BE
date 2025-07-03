@@ -6,18 +6,23 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+import project.moodipie.config.security.UserDetailsImpl;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+
 @RequiredArgsConstructor
+@Slf4j
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -28,13 +33,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        Optional<String> optionalAuth = getAuthorization(request);
-        if (optionalAuth.isEmpty()) {
-            sendUnauthorizedResponse(response, "NULL Header or No Bearer");
-            return;
-        }
-
-        String token = extractToken(optionalAuth.get());
+        String token = extractTokenFromHeader(request);
         if (token == null) {
             sendUnauthorizedResponse(response, "NULL token");
             return;
@@ -56,7 +55,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        setAuthentication(userEmail, token, request);
+        setAuthentication(userEmail, request);
         filterChain.doFilter(request, response);
     }
 
@@ -66,21 +65,24 @@ public class JWTFilter extends OncePerRequestFilter {
                 requestURI.matches("/v3/.*");
     }
 
-    private Optional<String> getAuthorization(HttpServletRequest request) {
+    private String extractTokenFromHeader(HttpServletRequest request) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        return (authorization != null && authorization.startsWith("Bearer "))
-                ? Optional.of(authorization)
-                : Optional.empty();
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null;
+        }
+
+        String token = authorization.substring(7);
+        return token.trim().isEmpty() ? null : token;
     }
 
-    private String extractToken(String authorization) {
-        String[] parts = authorization.split(" ");
-        return (parts.length == 2) ? parts[1] : null;
-    }
-
-    private void setAuthentication(String userEmail, String token, HttpServletRequest request) {
+    private void setAuthentication(String userEmail, HttpServletRequest request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(userEmail);
         UsernamePasswordAuthenticationToken authentication =
-                UsernamePasswordAuthenticationToken.authenticated(userEmail, token, List.of(new SimpleGrantedAuthority("USER")));
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,   //Crendentials
+                        userDetails.getAuthorities()
+                );
         authentication.setDetails(new WebAuthenticationDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

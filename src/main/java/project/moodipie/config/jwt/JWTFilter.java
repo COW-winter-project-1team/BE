@@ -27,14 +27,17 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+        log.debug("Processing request: {} {}", request.getMethod(), requestURI);
 
         if (isExcludedUrl(requestURI)) {
+            log.debug("Skipping JWT filter for excluded URL: {}", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = extractTokenFromHeader(request);
         if (token == null) {
+            log.warn("Authorization header missing or malformed for URI: {}", request.getRequestURI());
             sendUnauthorizedResponse(response, "NULL token");
             return;
         }
@@ -56,6 +59,8 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         setAuthentication(userEmail, request);
+        log.debug("Authentication set for user: {}", userEmail);
+
         filterChain.doFilter(request, response);
     }
 

@@ -4,22 +4,22 @@ info:
   description: 스웨거 API
   version: v1.0.0
 servers:
-- url: https://moodipie.duckdns.org
-- url: https://운영URL
+  - url: https://moodipie.shop
+  - url: https://운영URL
 tags:
-- name: 음악 CRUD
-  description: 스포티파이에서 가져온 음악정보
-- name: 플레이리스트 CRUD
-  description: 플레이리스트 CRUD
-- name: 스포티파이 api
-  description: 스포티파이 외부 api
-- name: 회원
-  description: 회원관리 CRUD
+  - name: 음악 CRUD
+    description: 스포티파이에서 가져온 음악정보
+  - name: 플레이리스트 CRUD
+    description: 플레이리스트 CRUD
+  - name: 스포티파이 api
+    description: 스포티파이 외부 api
+  - name: 회원
+    description: 회원관리 CRUD
 paths:
-  /api/users:
+  /users:
     get:
       tags:
-      - 회원
+        - 회원
       summary: 마이페이지 조회
       description: 내 정보를 조회합니다.
       operationId: userPage
@@ -43,10 +43,10 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
+        - Authorization: []
     put:
       tags:
-      - 회원
+        - 회원
       summary: 내 정보 수정
       description: 내 정보를 수정합니다.
       operationId: updateUser
@@ -76,10 +76,10 @@ paths:
                     message: 잘못된 형식입니다.
                     divisionCode: G002
       security:
-      - Authorization: []
+        - Authorization: []
     delete:
       tags:
-      - 회원
+        - 회원
       summary: 회원 탈퇴
       description: 회원 탈퇴합니다.
       operationId: deleteUser
@@ -103,23 +103,23 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
-  /api/playlists/{playlistNumber}:
+        - Authorization: []
+  /playlists/{playlistNumber}:
     get:
       tags:
-      - 플레이리스트 CRUD
+        - 플레이리스트 CRUD
       summary: 플레이리스트 정보 조회
       description: 생성된 플레이리스트를 조회합니다.
       operationId: playlistResponse
       parameters:
-      - name: playlistNumber
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
+        - name: playlistNumber
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: 조회 성공
@@ -140,22 +140,22 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
+        - Authorization: []
     put:
       tags:
-      - 플레이리스트 CRUD
+        - 플레이리스트 CRUD
       summary: 플레이리스트 정보 수정
       description: 생성된 플레이리스트를 수정합니다.
       operationId: updatePlaylist
       parameters:
-      - name: playlistNumber
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
+        - name: playlistNumber
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -189,22 +189,22 @@ paths:
                     message: 잘못된 형식입니다.
                     divisionCode: G002
       security:
-      - Authorization: []
+        - Authorization: []
     delete:
       tags:
-      - 플레이리스트 CRUD
+        - 플레이리스트 CRUD
       summary: 플레이리스트 삭제
       description: 홈 화면에서 플레이리스트를 삭제합니다.
       operationId: deletePlaylist
       parameters:
-      - name: playlistNumber
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
+        - name: playlistNumber
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: 삭제 성공
@@ -225,22 +225,22 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
-  /api/token:
+        - Authorization: []
+  /token:
     post:
       tags:
-      - 회원
+        - 회원
       summary: 토큰 갱신
       description: 만료될 토큰을 갱신합니다.
       operationId: refreshToken
       parameters:
-      - name: Authorization
-        in: header
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: 토큰 갱신 성공
@@ -255,11 +255,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiRes"
       security:
-      - Authorization: []
-  /api/spotify/api/tracks:
+        - Authorization: []
+  /spotify/api/tracks:
     post:
       tags:
-      - 스포티파이 api
+        - 스포티파이 api
       summary: 외부 api로 노래 저장
       description: 노래를 가져와 db에 저장합니다.
       operationId: saveTracks
@@ -303,11 +303,11 @@ paths:
                     message: 스포티파이에서 곡을 찾지 못했습니다.
                     divisionCode: S001
       security:
-      - Authorization: []
-  /api/signup:
+        - Authorization: []
+  /signup:
     post:
       tags:
-      - 회원
+        - 회원
       summary: 회원가입
       description: 회원에 가입합니다.
       operationId: signup
@@ -336,10 +336,10 @@ paths:
                     httpStatus: 400
                     message: 잘못된 형식입니다.
                     divisionCode: G002
-  /api/playlists:
+  /playlists:
     get:
       tags:
-      - 플레이리스트 CRUD
+        - 플레이리스트 CRUD
       summary: 홈에서 플레이리스트 조회
       description: 홈 화면에서 플레이리스트를 조회합니다.
       operationId: findAllPlaylist
@@ -363,10 +363,10 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
+        - Authorization: []
     post:
       tags:
-      - 플레이리스트 CRUD
+        - 플레이리스트 CRUD
       summary: 플레이리스트 생성
       description: 새로운 플레이리스트를 생성합니다.
       operationId: savePlaylist
@@ -408,11 +408,11 @@ paths:
                     message: 스포티파이에서 곡을 찾지 못했습니다.
                     divisionCode: S001
       security:
-      - Authorization: []
-  /api/logout:
+        - Authorization: []
+  /logout:
     post:
       tags:
-      - 회원
+        - 회원
       summary: 로그아웃
       description: 로그아웃합니다.
       operationId: logout
@@ -430,11 +430,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiRes"
       security:
-      - Authorization: []
-  /api/login:
+        - Authorization: []
+  /login:
     post:
       tags:
-      - 회원
+        - 회원
       summary: 로그인
       description: 내 정보로 로그인합니다.
       operationId: login
@@ -457,22 +457,22 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/ApiRes"
-  /api/tracks/{trackId}:
+  /tracks/{trackId}:
     get:
       tags:
-      - 음악 CRUD
+        - 음악 CRUD
       summary: 음악조회
       description: 가져온 음악을 조회합니다.
       operationId: getTrack
       parameters:
-      - name: trackId
-        in: path
-        description: 트랙 정보 얻기 위한 트랙 아이디
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: trackId
+          in: path
+          description: 트랙 정보 얻기 위한 트랙 아이디
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: 조회 성공
@@ -493,33 +493,33 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
-  /api/playlists/{playlistNumber}/tracks/{playlistTrackNumber}:
+        - Authorization: []
+  /playlists/{playlistNumber}/tracks/{playlistTrackNumber}:
     delete:
       tags:
-      - 플레이리스트 CRUD
+        - 플레이리스트 CRUD
       summary: 플레이리스트 내부 트랙 삭제
       description: 플레이리스트 내부의 트랙을 삭제 합니다.
       operationId: deletePlaylistTrack
       parameters:
-      - name: playlistNumber
-        in: path
-        description: 선택할 플레이리스트 아이디
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
-      - name: playlistTrackNumber
-        in: path
-        description: 삭제할 트랙 번호
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
+        - name: playlistNumber
+          in: path
+          description: 선택할 플레이리스트 아이디
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
+        - name: playlistTrackNumber
+          in: path
+          description: 삭제할 트랙 번호
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: 삭제 성공
@@ -540,7 +540,7 @@ paths:
                     message: NULL 값이 존재합니다.
                     divisionCode: G003
       security:
-      - Authorization: []
+        - Authorization: []
 components:
   schemas:
     ApiRes:
@@ -579,7 +579,7 @@ components:
           type: string
     UpdateUserRequest:
       required:
-      - username
+        - username
       type: object
       properties:
         username:
@@ -623,9 +623,9 @@ components:
           example: moodipie@gmail.com
     UpdatePlaylistRequest:
       required:
-      - emotion
-      - playlistImage
-      - title
+        - emotion
+        - playlistImage
+        - title
       type: object
       properties:
         title:
@@ -641,11 +641,11 @@ components:
           description: 감정
           example: SAD
           enum:
-          - HAPPY
-          - SAD
-          - MAD
-          - EXCITING
-          - TIRED
+            - HAPPY
+            - SAD
+            - MAD
+            - EXCITING
+            - TIRED
     ApiResUpdatePlaylistRequest:
       title: API 응답
       type: object
@@ -672,8 +672,8 @@ components:
             $ref: "#/components/schemas/FieldErrors"
     SpotifyTrackRequest:
       required:
-      - artistName
-      - trackName
+        - artistName
+        - trackName
       type: object
       properties:
         trackName:
@@ -713,10 +713,10 @@ components:
             $ref: "#/components/schemas/FieldErrors"
     CreateTrackRequest:
       required:
-      - artistName
-      - imageUrl
-      - trackId
-      - trackName
+        - artistName
+        - imageUrl
+        - trackId
+        - trackName
       type: object
       properties:
         trackId:
@@ -737,9 +737,9 @@ components:
           example: http://dfdfjiweoif.com
     CreateUserRequest:
       required:
-      - email
-      - password
-      - username
+        - email
+        - password
+        - username
       type: object
       properties:
         username:
@@ -782,10 +782,10 @@ components:
             $ref: "#/components/schemas/FieldErrors"
     CreatePlaylistRequest:
       required:
-      - emotion
-      - playlistImage
-      - title
-      - trackIds
+        - emotion
+        - playlistImage
+        - title
+        - trackIds
       type: object
       properties:
         title:
@@ -801,18 +801,18 @@ components:
           description: 감정
           example: SAD
           enum:
-          - HAPPY
-          - SAD
-          - MAD
-          - EXCITING
-          - TIRED
+            - HAPPY
+            - SAD
+            - MAD
+            - EXCITING
+            - TIRED
         trackIds:
           type: array
           description: 플레이리스트 트랙 ID들
           example:
-          - 7ouMYWpwJ422jRcDASZB7P
-          - 4VqPOruhp5EdPBeR92t6lQ
-          - 2takcwOaAZWiXQijPHIx7B
+            - 7ouMYWpwJ422jRcDASZB7P
+            - 4VqPOruhp5EdPBeR92t6lQ
+            - 2takcwOaAZWiXQijPHIx7B
           items:
             type: string
     ApiResPlaylistResponse:
@@ -865,15 +865,15 @@ components:
           description: 감정
           example: SAD
           enum:
-          - HAPPY
-          - SAD
-          - MAD
-          - EXCITING
-          - TIRED
+            - HAPPY
+            - SAD
+            - MAD
+            - EXCITING
+            - TIRED
     UserLoginRequest:
       required:
-      - email
-      - password
+        - email
+        - password
       type: object
       properties:
         email:
@@ -1001,16 +1001,16 @@ components:
           type: array
           description: 플레이리스트 트랙 정보
           example:
-          - playlistTrackNumber: "1"
-            trackId: sdakfjiosdwn1dnfsd
-            trackName: 바다의 왕자
-            artistName: 박명수
-            imageUrl: http://dfdfjiweoif.com
-          - playlistTrackNumber: "2"
-            trackId: 다른 아이디
-            trackName: 다른노래
-            artistName: 다른 가수
-            imageUrl: 다른 링크
+            - playlistTrackNumber: "1"
+              trackId: sdakfjiosdwn1dnfsd
+              trackName: 바다의 왕자
+              artistName: 박명수
+              imageUrl: http://dfdfjiweoif.com
+            - playlistTrackNumber: "2"
+              trackId: 다른 아이디
+              trackName: 다른노래
+              artistName: 다른 가수
+              imageUrl: 다른 링크
           items:
             $ref: "#/components/schemas/TrackResponse"
     ApiResPlaylistTrackEachResponse:
@@ -1061,3 +1061,8 @@ components:
           type: string
           description: 이미지 URL
           example: http://dfdfjiweoif.com
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

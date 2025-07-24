@@ -24,6 +24,7 @@ import project.moodipie.swagger.ApiResponseExplanations;
 import project.moodipie.user.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class PlaylistController {
             @AuthenticationPrincipal String userEmail,
             @RequestBody @Valid  CreatePlaylistRequest request) {
         PlaylistResponse createPlaylistRequest = playlistService.savePlaylist(userEmail, request);
-        ApiRes<PlaylistResponse> response = ApiRes.created(createPlaylistRequest);
+        ApiRes<PlaylistResponse> response = ApiRes.created(createPlaylistRequest, "회원가입이 성공적으로 완료되었습니다.");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
@@ -114,7 +115,7 @@ public class PlaylistController {
             @Parameter(description = "삭제할 트랙 번호", required = true)
             @PathVariable("playlistTrackNumber") Long playlistTrackNumber) {
         PlaylistTrackEachResponse playlistTracks = playlistService.deletePlaylistTrack(userEmail, playlistNumber, playlistTrackNumber);
-        ApiRes<PlaylistTrackEachResponse> response = ApiRes.delete(playlistTracks);
+        ApiRes<PlaylistTrackEachResponse> response = ApiRes.delete(playlistTracks, "회원 탈퇴가 성공적으로 완료되었습니다.");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
@@ -129,7 +130,7 @@ public class PlaylistController {
     )
     @GetMapping
     public ResponseEntity<ApiRes<List<PlaylistResponse>>> findAllPlaylist(@AuthenticationPrincipal String userEmail) {
-        Long userId = userService.findUserByEmail(userEmail).getId();
+        UUID userId = userService.findUserByEmail(userEmail).getId();
         List<PlaylistResponse> allPlaylist = playlistService.findAllPlaylistByUserId(userId);
         ApiRes<List<PlaylistResponse>> response = ApiRes.ok(allPlaylist);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -150,7 +151,7 @@ public class PlaylistController {
             @AuthenticationPrincipal String userEmail,
             @PathVariable("playlistNumber") Long playlistNumber) {
         PlaylistResponse playlist = playlistService.deletePlaylist(userEmail, playlistNumber);
-        ApiRes<PlaylistResponse> response = ApiRes.delete(playlist);
+        ApiRes<PlaylistResponse> response = ApiRes.delete(playlist, "회원 탈퇴가 성공적으로 완료되었습니다.");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 

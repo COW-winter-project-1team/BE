@@ -1,6 +1,7 @@
 package project.moodipie.user.controller.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,10 +22,15 @@ public class UserInfoResponse {
     @Schema(description = "계정 생성일", example = "2025-07-23T10:00:00")
     private final LocalDateTime createdAt;
 
+    @Schema(description = "프로필 사진", example = "asdasdajsdpo.asd")
+    @Nullable
+    public String profileImageUrl;
+
     public static UserInfoResponse from(User user) {
         return UserInfoResponse.builder()
                 .username(user.getName())
                 .email(user.getEmail())
+                .profileImageUrl(user.getProfileImageUrl())
                 .createdAt(user.getCreatedAt())
                 .build();
 

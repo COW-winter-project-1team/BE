@@ -19,7 +19,6 @@ bin/
 
 ### IntelliJ IDEA ###
 spotify.yml
-application-jwt.yml
 application-prod.yml
 
 .idea

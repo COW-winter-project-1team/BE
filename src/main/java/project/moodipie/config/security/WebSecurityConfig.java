@@ -1,25 +1,22 @@
-package project.moodipie.config.jwt;
+package project.moodipie.config.security;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.servlet.HandlerExceptionResolver;
+import project.moodipie.config.jwt.CorsProperties;
+import project.moodipie.config.jwt.JWTFilter;
+import project.moodipie.config.jwt.JWTUtil;
 
-import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -29,7 +26,6 @@ public class WebSecurityConfig {
     private final JWTUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final CorsProperties corsProperties;
-    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -45,18 +41,6 @@ public class WebSecurityConfig {
                 }))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // 인증되지 않은 요청 처리 (토큰 없음, 401)
-                        .accessDeniedHandler(new AccessDeniedHandler() {
-                            @Override
-                            public void handle(HttpServletRequest request, HttpServletResponse response, org.springframework.security.access.AccessDeniedException accessDeniedException) throws IOException, ServletException {
-                                response.setStatus(HttpStatus.FORBIDDEN.value());
-                                response.setContentType("application/json;charset=UTF-8");
-                                response.getWriter().write("{\"message\": \"접근 권한이 없습니다.\"}");
-                            }
-
-                        })
-                )
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers("/login", "/signup").permitAll();
                     requests.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll();
@@ -69,8 +53,13 @@ public class WebSecurityConfig {
                         sessionManagement ->
                                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JWTFilter(jwtUtil, userDetailsService, handlerExceptionResolver), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

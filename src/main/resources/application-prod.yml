@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydatabase
+    username: myuser
+    password: '0000'
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+jwt:
+  secret: eW91ci1zZWNyZXQta2V512311321fdds23eqw32eqw2323wq2323qe32e3223w2e2wrg2fsd3f3x2gh3fzdfzd3f223
+  expire-ms: 3600000
+
+  access:
+    expiration: 60
+    header: Authorization
+
+  refresh:
+    expiration: 120
+    header: Authorization-refresh
+
+cors:
+  allowed-origins:
+    - https://moodie.shop
+    - https://www.moodie.shop

@@ -15,3 +15,22 @@ server:
     include-message: never
     include-binding-errors: never
     path: /error
+
+# --- Logging Configuration ---
+logging:
+  file:
+    path: ./logs
+    name: ${logging.file.path}/moodipie.log # Log file name
+  level:
+    root: INFO # Root log level
+    project.moodipie: INFO # Specific package log level
+    org.hibernate.type.descriptor.sql: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %cyan(%msg){%boldGreen(%logger{39}.%M:%L})%n' # Console log pattern
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} : %msg%n' # File log pattern
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      total-size-cap: 1GB
+      max-history: 7

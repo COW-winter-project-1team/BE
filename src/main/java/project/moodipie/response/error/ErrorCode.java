@@ -5,19 +5,23 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
     // 클라이언트 오류 (400)
-    INVALID_VALUE(400, "G001", "유효하지 않은 값이 존재합니다."),
-    CONFLICT(409, "C001", "해당하는 이메일이 존재합니다."),
+    RESOURCE_NOT_FOUND_PATH(404, "R001","요청한 경로를 찾을 수 없습니다."),
     RESOURCE_NOT_FOUND(404, "L001","요청한 리소스를 찾을 수 없습니다" ),
     USER_NOT_FOUND(404, "L001","사용자가 존재하지 않습니다." ),
-    NULL_VALUE(400, "G003", "NULL 값이 존재합니다."),
+
+    INVALID_VALUE(400, "G001", "유효하지 않은 값이 존재합니다."),
+    EMAIL_CONFLICT(409, "C002", "해당하는 이메일이 이미 존재합니다."),
+    PASSWORD_MISSMATCH(401, "C003", "비밀번호가 일치하지 않습니다."),
+
+    NULL_VALUE(400, "G001", "NULL 값이 존재합니다."),
     INVALID_FORMAT(400, "G002", "잘못된 형식입니다."),
     MISSING_PATH(400, "G003", "경로에 대한 값이 없습니다."),
 
 
     // 토큰 오류 (401)
     TOKEN_EXPIRED(401, "T001", "토큰이 만료되었습니다."),
-    TOKEN_FORMAT_ERROR(401, "T003", "잘못된 형식의 토큰입니다."),
-    TOKEN_SIGNATURE_INVALID(401, "T004", "토큰 무결성이 유효하지 않습니다."),
+    TOKEN_FORMAT_ERROR(401, "T002", "잘못된 형식의 토큰입니다."),
+    TOKEN_SIGNATURE_INVALID(401, "T003", "토큰 무결성이 유효하지 않습니다."),
     TOKEN_ERROR(401, "T005", "토큰 관련 에러입니다."),
     UNAUTHORIZED(401, "G003", "인가되지 않은 요청입니다."),
 

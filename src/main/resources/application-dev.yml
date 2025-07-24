@@ -13,6 +13,7 @@ spring:
         highlight_sql: true
 jwt:
   secret: eW91ci1zZWNyZXQta2V512311321fdds23eqw32eqw2323wq2323qe32e3223w2e2wrg2fsd3f3x2gh3fzdfzd3f22f
+  expire-ms: 3600000
 
   access:
     expiration: 80

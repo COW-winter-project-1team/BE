@@ -9,6 +9,7 @@ import project.moodipie.user.entity.User;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -25,7 +26,7 @@ public class UserDetailsImpl implements UserDetails {
     /**
      * 사용자 ID 반환
      */
-    public Long getUserId() {
+    public UUID getUserId() {
         return user.getId();
     }
 

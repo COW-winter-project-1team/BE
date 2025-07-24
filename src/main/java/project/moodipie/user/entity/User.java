@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import project.moodipie.music.playlist.entity.Playlist;
 import project.moodipie.music.playlist.entity.PlaylistTrack;
 import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,10 @@ public class User {
     private String password;
     private boolean firstLogin;
 
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
     private List<Playlist> playlists = new ArrayList<>();
 
@@ -41,6 +47,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.firstLogin = true;
+        this.createdAt = LocalDateTime.now();
     }
     public void updateName(UpdateUserRequest updateUserRequest) {
         this.name = updateUserRequest.getUsername();

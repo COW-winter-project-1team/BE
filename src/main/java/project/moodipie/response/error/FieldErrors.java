@@ -13,14 +13,16 @@ import java.util.stream.Collectors;
 public class FieldErrors {
     private final String field;
     private final String value;
-    private final String code; // 에러 종류를 나타내는 코드 추가 (예: EMAIL_ALREADY_EXISTS, INVALID_FORMAT)
-    private final String message; // 상세 메시지로
+    private final String reason;
 
-    public static List<FieldErrors> of(final String field, final String value, final String code, final String message) {
+    public static List<FieldErrors> of(final String field, final String value, final String reason) {
         List<FieldErrors> fieldErrors = new ArrayList<>();
-        fieldErrors.add(new FieldErrors(field, value, code, message));
+        fieldErrors.add(new FieldErrors(field, value, reason));
         return fieldErrors;
     }
+
+
+
 
     public static List<FieldErrors> of(final BindingResult bindingResult) {
         final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -28,16 +30,15 @@ public class FieldErrors {
                 .map(error -> new FieldErrors(
                         error.getField(),
                         error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
-                        error.getCode() != null ? error.getCode() : "VALIDATION_ERROR",
                         error.getDefaultMessage()))
                 .collect(Collectors.toList());
     }
 
     @Builder
-    FieldErrors(String field, String value, String code, String message) {
+    FieldErrors(String field, String value, String reason) {
         this.field = field;
         this.value = value;
-        this.code = code;
-        this.message = message;
+        this.reason = reason;
     }
 }
+

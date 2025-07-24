@@ -87,9 +87,10 @@ public class UserController {
     )
     @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/users")
-    public ResponseEntity<ApiRes<Void>> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        userService.deleteUserByEmail(userDetails.getEmail()); //
-        ApiRes<Void> response = ApiRes.delete(null, "회원 탈퇴가 성공적으로 완료되었습니다.");
+    public ResponseEntity<ApiRes<UserInfoResponse>> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // userDetails에서 이메일을 가져와서 해당 유저를 삭제
+        UserInfoResponse user = userService.deleteUserByEmail(userDetails.getEmail());
+        ApiRes<UserInfoResponse> response = ApiRes.delete(user);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
@@ -105,10 +106,10 @@ public class UserController {
             }
     )
     @PostMapping("/signup")
-    public ResponseEntity<ApiRes<Void>> signup(@RequestBody @Valid CreateUserRequest createUserRequest) {
-        userService.signup(createUserRequest); //
-        ApiRes<Void> response = ApiRes.created(null, "회원가입이 성공적으로 완료되었습니다.");
-        return ResponseEntity.status(response.getHttpStatus()).body(response); //
+    public ResponseEntity<ApiRes<CreateUserRequest>> signup(@RequestBody @Valid CreateUserRequest createUserRequest) {
+        CreateUserRequest signup = userService.signup(createUserRequest);
+        ApiRes<CreateUserRequest> response = ApiRes.created(signup);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @Operation(summary = "로그인", description = "내 정보로 로그인합니다.")
@@ -118,8 +119,7 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<ApiRes<UserLoginResponse>> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
-        UserLoginResponse loginResponseData = userService.login(userLoginRequest);
-        ApiRes<UserLoginResponse> response = ApiRes.ok(loginResponseData);
+        ApiRes<UserLoginResponse> response = ApiRes.ok(userService.login(userLoginRequest));
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 

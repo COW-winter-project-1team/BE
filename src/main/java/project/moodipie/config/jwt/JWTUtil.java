@@ -2,8 +2,6 @@ package project.moodipie.config.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,7 +101,4 @@ public class JWTUtil {
         return false;
     }
 
-    public String createRefreshToken(@Email @NotBlank String email) {
-        return null;
-    }
 }

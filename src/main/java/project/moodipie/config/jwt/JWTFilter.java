@@ -108,7 +108,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private void reject(HttpServletResponse response, String field, String value, String reason) throws IOException {
-        List<FieldErrors> error = FieldErrors.of(field, value, ErrorCode.TOKEN_ERROR.name(), reason);
+        List<FieldErrors> error = FieldErrors.of(field, value, reason);
         ApiRes<Void> body = ApiRes.error(ErrorCode.UNAUTHORIZED, error);
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

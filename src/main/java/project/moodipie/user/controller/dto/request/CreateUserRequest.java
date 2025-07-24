@@ -1,7 +1,6 @@
 package project.moodipie.user.controller.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,16 +20,12 @@ public class CreateUserRequest {
     @NotBlank
     @Size(min = 8, message = "8자 이상의 영문, 특수문자, 숫자 조합")
     private String password;
-    @Schema(description = "프로필 사진", example = "asdasdajsdpo.asd")
-    @Nullable
-    public String profileImageUrl;
 
     public User toEntity(){
         return  User.builder()
                 .name(username)
                 .email(email)
                 .password(password)
-                .profileImageUrl(profileImageUrl)
                 .build();
     }
 }

@@ -21,7 +21,6 @@ import project.moodipie.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +52,7 @@ public class PlaylistService {
     }
 
     @Transactional(readOnly = true)
-    public List<PlaylistResponse> findAllPlaylistByUserId(UUID userId) {
+    public List<PlaylistResponse> findAllPlaylistByUserId(Long userId) {
         return playlistRepository.findByUserId(userId).stream().map(PlaylistResponse::from).collect(Collectors.toList());
     }
 
@@ -95,7 +94,7 @@ public class PlaylistService {
         return PlaylistTrackEachResponse.from(playlistDeleteTrack);
     }
 
-    private Long getNextPlaylistNumber(UUID userId) {
+    private Long getNextPlaylistNumber(Long userId) {
         Long playlistCount = playlistRepository.countByUserId(userId);
         return playlistCount + 1;
     }

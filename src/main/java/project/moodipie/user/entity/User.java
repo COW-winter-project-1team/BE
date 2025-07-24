@@ -1,7 +1,6 @@
 package project.moodipie.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,18 +14,16 @@ import project.moodipie.user.controller.dto.request.UpdateUserRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id", columnDefinition = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
 
     private String name;
     private String email;
@@ -38,10 +35,6 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "profile_image_url", nullable = true)
-    @Nullable
-    private String profileImageUrl;
-
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
     private List<Playlist> playlists = new ArrayList<>();
 
@@ -49,16 +42,14 @@ public class User {
     private List<PlaylistTrack> playlistTracks = new ArrayList<>();
 
     @Builder
-    private User(String name, String email, String password,String profileImageUrl) {
+    private User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.firstLogin = true;
         this.createdAt = LocalDateTime.now();
-        this.profileImageUrl = profileImageUrl;
     }
     public void updateName(UpdateUserRequest updateUserRequest) {
         this.name = updateUserRequest.getUsername();
-        this.profileImageUrl = updateUserRequest.getProfileImageUrl();
     }
 }

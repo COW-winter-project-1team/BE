@@ -27,7 +27,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/playlists")
+@RequestMapping("/playlists")
 @SecurityRequirement(name = "Authorization")
 @Tag(name = "플레이리스트 CRUD", description = "플레이리스트 CRUD")
 public class PlaylistController {
